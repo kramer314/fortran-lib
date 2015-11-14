@@ -21,9 +21,6 @@
 !   call exception_raise("Exception message", exception_[LEVEL])
 ! where exception_[LEVEL] is the proper integer exception level code (which are
 ! set automatically in exception_[LEVEL] variables in this module).
-
-! TODO
-! Logging functionality: Write to STDOUT / STDERR / FILES
 module exception
 
   use log, only: log_log, log_stderr, log_stdout, log_critical, log_error, &
