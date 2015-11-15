@@ -1,3 +1,7 @@
+! Copyright (c) 2015 Alex Kramer <kramer.alex.kramer@gmail.com>
+! See the LICENSE.txt file in the top-level directory of this distribution
+!
+! This module implements basic string conversions.
 module string
 
   use globvars, only: dp, dp_format, int_format
@@ -6,17 +10,30 @@ module string
 
   private
 
-  public str_num
-  interface str_num
-     ! Get string representation of numbers
-     module procedure str_dp_real
-     module procedure str_int
-  end interface str_num
+  public :: string_val
+  public :: string_to_val
+
+  interface string_val
+     ! Get string representation of values
+     module procedure string_dp_real
+     module procedure string_int
+     module procedure string_logical
+  end interface string_val
+
+  interface string_to_val
+     ! Convert string representations to values
+     module procedure string_to_dp_real
+     module procedure string_to_int
+     module procedure string_to_logical
+  end interface string_to_val
 
 contains
 
-  function str_dp_real(num, fmt) result(val)
+  function string_dp_real(num, fmt) result(val)
     ! Get string representation of double precision real
+    !
+    ! num :: double precision real value to convert
+    ! fmt :: optional custom format string
     character(:), allocatable :: val
 
     real(dp), intent(in) :: num
@@ -32,10 +49,13 @@ contains
 
     val = trim(adjustl(tmp))
 
-  end function str_dp_real
+  end function string_dp_real
 
-  function str_int(num, fmt) result(val)
-    ! Get string representation of single precision integer
+  function string_int(num, fmt) result(val)
+    ! Get string representation of integer
+    !
+    ! num :: integer value to convert
+    ! fmt :: optional custom format string
     character(:), allocatable :: val
 
     integer, intent(in) :: num
@@ -51,11 +71,13 @@ contains
 
     val = trim(adjustl(tmp))
 
-  end function str_int
+  end function string_int
 
-  function str_logical(bool, full) result(val)
+  function string_logical(bool, full) result(val)
     ! Get string representation of logical value
-
+    !
+    ! bool :: logical value to convert
+    ! full :: toggle whether only first letter (T/F) or full word is used
     character(:), allocatable :: val
 
     logical, intent(in) :: bool
@@ -83,6 +105,45 @@ contains
        end if
     end if
 
-  end function str_logical
+  end function string_logical
+
+  subroutine string_to_int(str, val)
+    ! Get integer value from string
+    !
+    ! str :: string to convert
+    ! val :: output value
+    character(*), intent(in) :: str
+    integer, intent(out) :: val
+
+    read(str, *) val
+  end subroutine string_to_int
+
+  subroutine string_to_dp_real(str, val)
+    ! Get double precision real value from string
+    !
+    ! str :: string to convert
+    ! val :: output value
+    character(*), intent(in) :: str
+    real(dp), intent(out) :: val
+
+    read(str, *) val
+  end subroutine string_to_dp_real
+
+  subroutine string_to_logical(str, val)
+    ! Get logical value from string
+    !
+    ! str :: string to convert
+    ! val :: output value
+    character(*), intent(in) :: str
+    logical, intent(out) :: val
+
+    select case(trim(adjustl(str)))
+    case ("T", "True", "true", ".true.")
+       val = .true.
+    case ("F", "False", "false", ".false.")
+       val = .false.
+    end select
+
+  end subroutine string_to_logical
 
 end module string
