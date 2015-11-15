@@ -53,4 +53,36 @@ contains
 
   end function str_int
 
+  function str_logical(bool, full) result(val)
+    ! Get string representation of logical value
+
+    character(:), allocatable :: val
+
+    logical, intent(in) :: bool
+    logical, intent(in), optional :: full
+
+    logical :: full_str
+
+    if (present(full)) then
+       full_str = full
+    else
+       full_str = .true.
+    end if
+
+    if (bool) then
+       if (full_str) then
+          val = "True"
+       else
+          val = "T"
+       end if
+    else
+       if (full_str) then
+          val = "False"
+       else
+          val = "F"
+       end if
+    end if
+
+  end function str_logical
+
 end module string
