@@ -5,7 +5,7 @@
 module array
 
   use globvars, only: dp
-  
+
   implicit none
 
   private
@@ -13,6 +13,7 @@ module array
   public array_quicksort
   public array_swap
   public array_reverse
+  public array_pack
 
   interface array_quicksort
      ! Quicksort in increasing order using Lomuto partitioning
@@ -33,6 +34,12 @@ module array
      module procedure array_reverse_dp
      module procedure array_reverse_int
   end interface array_reverse
+
+  interface array_pack
+     ! Pack new array from optional mask values
+     module procedure array_pack_dp
+     module procedure array_pack_int
+  end interface array_pack
 
 contains
 
@@ -63,10 +70,10 @@ contains
     arr(j) = temp
 
   end subroutine array_swap_int
-  
+
   subroutine array_reverse_dp(arr)
     ! Reverse array
-    
+
     real(dp), intent(inout) :: arr(:)
 
     integer :: i, j, n
@@ -77,12 +84,12 @@ contains
        call array_swap_dp(arr, i, j)
        j = j -1
     end do
-    
+
   end subroutine array_reverse_dp
 
   subroutine array_reverse_int(arr)
     ! Reverse array
-    
+
     integer, intent(inout) :: arr(:)
 
     integer :: i, j, n
@@ -180,4 +187,43 @@ contains
     end subroutine partition_lomuto_int
 
   end subroutine array_quicksort_int
+
+  subroutine array_pack_dp(in_arr, out_arr, mask)
+    real(dp), intent(in) :: in_arr(:)
+    real(dp), allocatable, intent(out) :: out_arr(:)
+    logical, intent(in), optional :: mask(:)
+
+    integer :: arr_size
+
+    if (present(mask)) then
+       arr_size = count(mask)
+       allocate(out_arr(arr_size))
+       out_arr = pack(in_arr, mask)
+    else
+       arr_size = size(in_arr)
+       allocate(out_arr(arr_size))
+       out_arr(:) = in_arr(:)
+    end if
+
+  end subroutine array_pack_dp
+
+  subroutine array_pack_int(in_arr, out_arr, mask)
+    integer, intent(in) :: in_arr(:)
+    integer, allocatable, intent(out) :: out_arr(:)
+    logical, intent(in), optional :: mask(:)
+
+    integer :: arr_size
+
+    if (present(mask)) then
+       arr_size = count(mask)
+       allocate(out_arr(arr_size))
+       out_arr = pack(in_arr, mask)
+    else
+       arr_size = size(in_arr)
+       allocate(out_arr(arr_size))
+       out_arr(:) = in_arr(:)
+    end if
+
+  end subroutine array_pack_int
+
 end module array

@@ -4,7 +4,7 @@
 ! Basic statistics functionality
 module stats
   use globvars
-  use array, only: array_quicksort
+  use array, only: array_quicksort, array_pack
 
   implicit none
 
@@ -12,7 +12,12 @@ module stats
 
   public :: stats_residuals
   public :: stats_mean
+  public :: stats_fivenum
+  public :: stats_max
+  public :: stats_min
   public :: stats_median
+  public :: stats_lower_quartile
+  public :: stats_upper_quartile
   public :: stats_mean_sq_err
   public :: stats_mean_abs_err
   public :: stats_variance
@@ -53,28 +58,128 @@ contains
 
   end function stats_mean
 
-  real(dp) function stats_median(data_arr, mask) result(val)
-    ! Calculate median
+  subroutine stats_fivenum(data_arr, summary_arr, mask, sorted)
+    ! Generate five-number summary statistics
+    !
+    ! data_arr :: array of data values
+    ! summary_arr :: 5-element array for summary values, with entries:
+    !  [min, lower_quartile, median, upper_quartile, max]
+    ! mask :: logical masking array
+    ! sorted :: whether data_arr is already sorted
+    real(dp), intent(in) :: data_arr(:)
+    real(dp), intent(out) :: summary_arr(5)
+    logical, intent(in), optional :: mask(:)
+    logical, intent(in), optional :: sorted
+
+    real(dp) :: min, lq, med, uq, max
+
+    min = stats_min(data_arr, mask=mask)
+    lq = stats_lower_quartile(data_arr, mask=mask, sorted=sorted)
+    med= stats_median(data_arr, mask=mask, sorted=sorted)
+    uq = stats_upper_quartile(data_arr, mask=mask, sorted=sorted)
+    max = stats_max(data_arr, mask=mask)
+
+    summary_arr = [min, lq, med, uq, max]
+
+  end subroutine stats_fivenum
+
+  real(dp) function stats_lower_quartile(data_arr, mask, sorted) result(val)
+    ! Calculate lower quartile value
+    !
+    ! data_arr :: array of data values
+    ! mask :: logical masking array
+    ! sorted :: whether data_arr is already sorted
+    real(dp), intent(in) :: data_arr(:)
+    logical, intent(in), optional :: mask(:)
+    logical, intent(in), optional :: sorted
+
+    real(dp), allocatable :: data_work_arr(:)
+    integer :: data_size
+
+    call array_pack(data_arr, data_work_arr, mask=mask)
+    data_size = size(data_work_arr)
+
+    if ((.not. present(sorted)) .or. (.not. sorted)) then
+       call array_quicksort(data_work_arr, 1, size(data_work_arr))
+    end if
+
+    ! lower quartile is median of values to the left of the median
+    val = stats_median(data_arr(:data_size / 2), sorted=.true.)
+
+    deallocate(data_work_arr)
+
+  end function stats_lower_quartile
+
+  real(dp) function stats_upper_quartile(data_arr, mask, sorted) result(val)
+    ! Calculate upper quartile value
+    !
+    ! data_arr :: array of data values
+    ! mask :: logical masking array
+    ! sorted :: whether data_arr is already sorted
+    real(dp), intent(in) :: data_arr(:)
+    logical, intent(in), optional :: mask(:)
+    logical, intent(in), optional :: sorted
+
+    real(dp), allocatable :: data_work_arr(:)
+    integer :: data_size
+
+    call array_pack(data_arr, data_work_arr, mask=mask)
+    data_size = size(data_work_arr)
+
+    if ((.not. present(sorted)) .or. (.not. sorted)) then
+       call array_quicksort(data_work_arr, 1, size(data_work_arr))
+    end if
+
+    ! upper quartile value is the median of values to the right of the median
+    val = stats_median(data_arr(data_size / 2:), sorted=.true.)
+
+    deallocate(data_work_arr)
+
+  end function stats_upper_quartile
+
+  real(dp) function stats_max(data_arr, mask) result(val)
+    ! Find max value
     !
     ! data_arr :: array of data values
     ! mask :: logical masking array
     real(dp), intent(in) :: data_arr(:)
     logical, intent(in), optional :: mask(:)
 
+    val = maxval(data_arr, mask=mask)
+
+  end function stats_max
+
+  real(dp) function stats_min(data_arr, mask) result(val)
+    ! Find min value
+    !
+    ! data_arr :: array of data values
+    ! mask :: logical masking array
+    real(dp), intent(in) :: data_arr(:)
+    logical, intent(in), optional :: mask(:)
+
+    val = minval(data_arr, mask=mask)
+
+  end function stats_min
+
+  real(dp) function stats_median(data_arr, mask, sorted) result(val)
+    ! Calculate median
+    !
+    ! data_arr :: array of data values
+    ! mask :: logical masking array
+    ! sorted :: whether data_arr is already sorted
+    real(dp), intent(in) :: data_arr(:)
+    logical, intent(in), optional :: mask(:)
+    logical, intent(in), optional :: sorted
+
     real(dp), allocatable :: data_work_arr(:)
     integer :: data_size
 
-    if (present(mask)) then
-       data_size = count(mask)
-       allocate(data_work_arr(data_size))
-       data_work_arr = pack(data_arr, mask)
-    else
-       data_size = size(data_arr)
-       allocate(data_work_arr(data_size))
-       data_work_arr(:) = data_arr(:)
-    end if
+    call array_pack(data_arr, data_work_arr, mask=mask)
+    data_size = size(data_work_arr)
 
-    call array_quicksort(data_work_arr, 1, size(data_work_arr))
+    if (.not. sorted) then
+       call array_quicksort(data_work_arr, 1, size(data_work_arr))
+    end if
 
     if (mod(data_size, 2) .eq. 0) then
        val = 0.5_dp * (data_work_arr(data_size / 2) + &
