@@ -62,7 +62,7 @@ contains
     integer :: io_err
     integer :: i_param
 
-    character(line_length) :: tmp_readin
+    character(:), allocatable :: tmp_readin
 
     if (present(max_line_length)) then
        line_length = max_line_length
@@ -70,12 +70,14 @@ contains
        line_length = default_line_length
     end if
 
-    open(newunit=file_unit, file=filename)
+    allocate(character(line_length) :: tmp_readin)
+
+    open(newunit=file_unit, file=filename, status="old", action="read")
 
     ! First sweep to determine number of parameters in file
     num_params = 0
     do
-       read(file_unit, *, iostat=io_err) tmp_readin
+       read(file_unit, "(A)", iostat=io_err) tmp_readin
 
        if (io_err .ne. 0) then
           exit
@@ -90,12 +92,12 @@ contains
 
     allocate(character(line_length) :: param_lines(num_params))
 
-    open(newunit=file_unit, file=filename)
+    open(newunit=file_unit, file=filename, status="old", action="read")
 
     ! Second sweep to read in parameter lines from file
     i_param = 1
     do
-       read(file_unit, *, iostat=io_err) tmp_readin
+       read(file_unit, "(A)", iostat=io_err) tmp_readin
 
        if (io_err .ne. 0) then
           exit
@@ -150,8 +152,9 @@ contains
     character(line_length) :: param_str
 
     call config_get_param_str(param_name, param_str, found)
+
     if (found) then
-       call str_to_val(param_str, val)
+       call string_to_val(param_str, val)
     end if
 
   end subroutine config_get_int
@@ -170,7 +173,7 @@ contains
 
     call config_get_param_str(param_name, param_str, found)
     if (found) then
-       call str_to_val(param_str, val)
+       call string_to_val(param_str, val)
     end if
 
   end subroutine config_get_real_dp

@@ -127,11 +127,11 @@ contains
 
       do j = i_min, i_max - 1
          if (arr(j) .le. pivot) then
-            call arrays_swap_dp(arr, i, j)
+            call array_swap_dp(arr, i, j)
             i = i + 1
          end if
       end do
-      call arrays_swap_dp(arr, i, i_max)
+      call array_swap_dp(arr, i, i_max)
 
       part = i
     end subroutine partition_lomuto_dp
@@ -170,11 +170,11 @@ contains
 
       do j = i_min, i_max - 1
          if (arr(j) .le. pivot) then
-            call arrays_swap_int(arr, i, j)
+            call array_swap_int(arr, i, j)
             i = i + 1
          end if
       end do
-      call arrays_swap_int(arr, i, i_max)
+      call array_swap_int(arr, i, i_max)
 
       part = i
     end subroutine partition_lomuto_int

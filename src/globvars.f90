@@ -1,6 +1,6 @@
 ! Copyright (c) 2015 Alex Kramer <kramer.alex.kramer@gmail.com>
 ! See the LICENSE.txt file in the top-level directory of this distribution
-
+!
 ! Global variables / numerical constants
 module globvars
   use iso_fortran_env, only: real64, int32
