@@ -45,7 +45,10 @@ contains
 
   subroutine array_swap_dp(arr, i, j)
     ! Swap values of arr(i) and arr(j)
-
+    !
+    ! arr :: array
+    ! i :: first index
+    ! j :: second index
     real(dp), intent(inout) :: arr(:)
     integer, intent(in) :: i, j
 
@@ -58,8 +61,7 @@ contains
   end subroutine array_swap_dp
 
   subroutine array_swap_int(arr, i, j)
-    ! Swap values of arr(i) and arr(j)
-
+    ! Duplicate of array_swap_dp, but for an integer array.
     integer, intent(inout) :: arr(:)
     integer, intent(in) :: i, j
 
@@ -73,7 +75,8 @@ contains
 
   subroutine array_reverse_dp(arr)
     ! Reverse array
-
+    !
+    ! arr :: array to reverse
     real(dp), intent(inout) :: arr(:)
 
     integer :: i, j, n
@@ -88,8 +91,7 @@ contains
   end subroutine array_reverse_dp
 
   subroutine array_reverse_int(arr)
-    ! Reverse array
-
+    ! Duplicate of array_reverse_dp, but for an integer array.
     integer, intent(inout) :: arr(:)
 
     integer :: i, j, n
@@ -104,7 +106,10 @@ contains
 
   recursive subroutine array_quicksort_dp(arr, i_min, i_max)
     ! Quicksort with Lomuto partitioning
-
+    !
+    ! arr :: array to sort (where i_min / i_max denote the slice to sort)
+    ! i_min :: left end of slice to sort
+    ! i_max :: right end of slice to sort
     real(dp), intent(inout) :: arr(:)
     integer, intent(in) :: i_min, i_max
 
@@ -119,8 +124,17 @@ contains
   contains
 
     subroutine partition_lomuto_dp(arr, i_min, i_max, part)
-      ! Lomuto partition scheme for quicksort
-
+      ! Lomuto partition operation
+      !
+      ! The partition operation reorders an array using a pivot value so that
+      ! all values less than the pivot value are before the pivot location,
+      ! while all values greater than the pivot value are after the pivot
+      ! location.
+      !
+      ! array :: array to partition
+      ! i_min :: left end of partition slice
+      ! i_max :: right end of partition slice
+      ! part :: partition value to return (final pivot position)
       real(dp), intent(inout) :: arr(:)
       integer, intent(in) :: i_min, i_max
       integer, intent(out) :: part
@@ -146,8 +160,7 @@ contains
   end subroutine array_quicksort_dp
 
   recursive subroutine array_quicksort_int(arr, i_min, i_max)
-    ! Quicksort with Lomuto partitioning
-
+    ! Duplicate of array_quicksort_dp, but for an integer array.
     integer, intent(inout) :: arr(:)
     integer, intent(in) :: i_min, i_max
 
@@ -162,8 +175,8 @@ contains
   contains
 
     subroutine partition_lomuto_int(arr, i_min, i_max, part)
-      ! Lomuto partition scheme for quicksort
-
+      ! Duplication of partition_lomuto_dp in array_quicksort_dp, but for an
+      ! integer array.
       integer, intent(inout) :: arr(:)
       integer, intent(in) :: i_min, i_max
       integer, intent(out) :: part
@@ -189,6 +202,15 @@ contains
   end subroutine array_quicksort_int
 
   subroutine array_pack_dp(in_arr, out_arr, mask)
+    ! Pack an array using an (optional) masking array.
+    !
+    ! pack() is an intrinsic routine, but the mask argument is required; when
+    ! we may or may not have a mask, this method is convenient. If no mask is
+    ! present, then this routine simply copies the input array.
+    !
+    ! in_arr :: input array
+    ! out_arr :: packed array
+    ! mask :: optional masking array
     real(dp), intent(in) :: in_arr(:)
     real(dp), allocatable, intent(out) :: out_arr(:)
     logical, intent(in), optional :: mask(:)
@@ -208,6 +230,7 @@ contains
   end subroutine array_pack_dp
 
   subroutine array_pack_int(in_arr, out_arr, mask)
+    ! Duplication of array_pack_dp, but for integer arrays.
     integer, intent(in) :: in_arr(:)
     integer, allocatable, intent(out) :: out_arr(:)
     logical, intent(in), optional :: mask(:)
