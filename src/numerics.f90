@@ -16,6 +16,41 @@ module numerics
   public :: numerics_cmplx_phase
   public :: numerics_trapz
 
+  interface numerics_d1
+     ! Calculate the 1st derivative of an array-valued function with respect to
+     ! a real-valued coordinate grid with constant spacing.
+     !
+     ! This uses a three-point finite-difference estimate:
+     !
+     !   f'(x) ~= ( f(x + dx) - f(x - dx) ) / ( 2 dx )
+     !
+     ! See documentation for specific module procedures for more details.
+     module procedure numerics_d1_real
+     module procedure numerics_d1_cmplx
+  end interface numerics_d1
+
+  interface numerics_d2
+     ! Calculate the 2nd derivative of an array-valued function with respect to
+     ! a real-valued coordinate grid with constant spacing.
+     !
+     ! This uses a three-point finite difference estimate:
+     !
+     !   f''(x) ~= (f(x - dx) - 2 f(x) + f(x + dx)) / (dx**2)
+     !
+     ! See documentation for specific module procedures for more details.
+     module procedure numerics_d2_real
+     module procedure numerics_d2_cmplx
+  end interface numerics_d2
+
+  interface numerics_rk4
+     ! 4th-order Runge-Kutta propagator for the first order system of
+     ! differential equations dy/dt = f(y, t)
+     !
+     ! See documentation for specific module procedures for more details.
+     module procedure numerics_rk4_real
+     module procedure numerics_rk4_cmplx
+  end interface numerics_rk4
+
 contains
 
    subroutine numerics_linspace(x_min, x_max, x_arr, dx)
@@ -40,18 +75,17 @@ contains
 
   end subroutine numerics_linspace
 
-  subroutine numerics_d1(arr, d_arr, dx)
-    ! Calculate the 1st derivative of a complex array-valued function with
-    ! respect to a real-valued coordinate with constant spacing:
-    !
-    !   f'(x) ~= (f(x + dx) - f(x - dx)) / (2 dx)
+  subroutine numerics_d1_real(arr, d_arr, dx)
+    ! Calculate the 1st derivative of an real array-valued function with
+    ! respect to a real-valued coordinate grid with constant grid spacing.
     !
     ! arr :: function array
-    ! d_arr :: array to populate
+    ! d_arr :: array to populate with 1st derivative values
     ! dx :: coordinate spacing
-    complex(dp), intent(in) :: arr(:)
-    complex(dp), intent(inout) :: d_arr(:)
+    real(dp), intent(in) :: arr(:)
+    real(dp), intent(out) :: d_arr(:)
     real(dp), intent(in) :: dx
+
     integer :: i_x, n_x
     real(dp) :: scale
 
@@ -74,19 +108,45 @@ contains
 
     d_arr(:) = scale * d_arr(:)
 
-  end subroutine numerics_d1
+  end subroutine numerics_d1_real
 
-  subroutine numerics_d2(arr, d2_arr, dx)
+  subroutine numerics_d1_cmplx(arr, d_arr, dx)
+    ! Duplication of numerics_d1_real, but for a complex array-valued function.
+    !
+    ! Once Fortran 2008 support is here, we can get rid of the duplicated code
+    ! and instead use the numerics_d1_real method on the real and imaginary
+    ! parts separately:
+    !   call subroutine numerics_d1_real(arr%re, d_arr%re, dx)
+    !   call subroutine numerics_d1_real(arr%im, d_arr%im, dx)
+    complex(dp), intent(in) :: arr(:)
+    complex(dp), intent(out) :: d_arr(:)
+    real(dp), intent(in) :: dx
+
+    integer :: i_x, n_x
+    real(dp) :: scale
+
+    n_x = size(arr)
+    scale = 1.0_dp / (2.0_dp * dx)
+
+    d_arr(1) = arr(2) - arr(1)
+    do i_x = 2, n_x - 1
+       d_arr(i_x) = arr(i_x + 1) - arr(i_x - 1)
+    end do
+    d_arr(n_x) = arr(n_x) - arr(n_x - 1)
+
+    d_arr(:) = scale * d_arr(:)
+
+  end subroutine numerics_d1_cmplx
+
+  subroutine numerics_d2_real(arr, d2_arr, dx)
     ! Calculate the 2nd derivative of a complex array-valued function with
     ! respect to a real-valued coordinate with constant spacing:
     !
-    !   f''(x) ~= (f(x - dx) - 2 f(x) + f(x + dx)) / (dx**2)
-    !
     ! arr :: function array
-    ! d2_arr :: array to populate
+    ! d2_arr :: array to populate with 2nd derivative values
     ! dx :: coordinate spacing
-    complex(dp), intent(in) :: arr(:)
-    complex(dp), intent(inout) :: d2_arr(:)
+    real(dp), intent(in) :: arr(:)
+    real(dp), intent(inout) :: d2_arr(:)
     real(dp), intent(in) :: dx
     integer :: i_x, n_x
     real(dp) :: scale
@@ -110,10 +170,31 @@ contains
 
     d2_arr(:) = scale * d2_arr(:)
 
-  end subroutine numerics_d2
+  end subroutine numerics_d2_real
 
-  subroutine numerics_rk4(f, y, t, dt)
-      ! 4th order Runge-Kutta propagator for the first order system of differential
+  subroutine numerics_d2_cmplx(arr, d2_arr, dx)
+    ! Duplication of numerics_d2_real, but for a complex array-valued function.
+    complex(dp), intent(in) :: arr(:)
+    complex(dp), intent(inout) :: d2_arr(:)
+    real(dp), intent(in) :: dx
+    integer :: i_x, n_x
+    real(dp) :: scale
+
+    n_x = size(arr)
+    scale = 1.0_dp / dx**2
+
+    d2_arr(1) = arr(1) + arr(2)
+    do i_x = 2, n_x - 1
+       d2_arr(i_x) = arr(i_x - 1) - 2 * arr(i_x) + arr(i_x + 1)
+    end do
+    d2_arr(n_x) = arr(n_x) + arr(n_x - 1)
+
+    d2_arr(:) = scale * d2_arr(:)
+
+  end subroutine numerics_d2_cmplx
+
+  subroutine numerics_rk4_real(f, y, t, dt)
+    ! 4th order Runge-Kutta propagator for the first order system of differential
     ! equations dy/dt = f(t, y)
     !
     ! f :: differential equation dy/dt = f(y, t) that returns values of the same
@@ -122,20 +203,21 @@ contains
     ! t :: current time parameter
     ! dt :: time step
     !
-    ! Note that the state array is overwritten during propagation.
-    complex(dp), intent(inout) :: y(:)
+    ! Note that the state array y is overwritten during propagation.
+    real(dp), intent(inout) :: y(:)
     real(dp), intent(in) :: t
     real(dp), intent(in) :: dt
 
-    complex(dp), dimension(size(y)) :: k1, k2, k3, k4
+    real(dp), dimension(size(y)) :: k1, k2, k3, k4
 
     ! Explicit interface for external differential equation system
     interface
 
        function f(y, t) result(val)
          import dp
+         real(dp) :: y(:)
          real(dp) :: t
-         complex(dp) :: y(:), val(size(y))
+         real(dp) :: val(size(y))
        end function f
 
     end interface
@@ -147,7 +229,35 @@ contains
 
     y = y + dt / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
 
-  end subroutine numerics_rk4
+  end subroutine numerics_rk4_real
+
+  subroutine numerics_rk4_cmplx(f, y, t, dt)
+    ! Duplication of numerics_rk4_real, but for a complex-valued function.
+    complex(dp), intent(inout) :: y(:)
+    real(dp), intent(in) :: t
+    real(dp), intent(in) :: dt
+
+    complex(dp), dimension(size(y)) :: k1, k2, k3, k4
+
+    interface
+
+       function f(y, t) result(val)
+         import dp
+         complex(dp) :: y(:)
+         real(dp) :: t
+         complex(dp) :: val(size(y))
+       end function f
+
+    end interface
+
+    k1 = f(y, t)
+    k2 = f(y + dt / 2 * k1, t + dt / 2)
+    k3 = f(y + dt / 2 * k2, t + dt / 2)
+    k4 = f(y + dt * k3, t + dt)
+
+    y = y + dt / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
+
+  end subroutine numerics_rk4_cmplx
 
   real(dp) function numerics_cmplx_phase(z) result(val)
     ! Get the phase of a complex number z = A exp(i phi), where A determines the
