@@ -94,12 +94,21 @@ contains
     logical, intent(in), optional :: sorted
 
     real(dp), allocatable :: data_work_arr(:)
+    logical :: to_sort
     integer :: data_size
 
     call array_pack(data_arr, data_work_arr, mask=mask)
     data_size = size(data_work_arr)
 
-    if ((.not. present(sorted)) .or. (.not. sorted)) then
+    to_sort = .true.
+    ! Can't be a single if statement since Fortran doesn't have short-circuiting
+    if (present(sorted)) then
+       if (sorted) then
+          to_sort = .false.
+       end if
+    end if
+
+    if (to_sort) then
        call array_quicksort(data_work_arr, 1, size(data_work_arr))
     end if
 
@@ -121,12 +130,21 @@ contains
     logical, intent(in), optional :: sorted
 
     real(dp), allocatable :: data_work_arr(:)
+    logical :: to_sort
     integer :: data_size
 
     call array_pack(data_arr, data_work_arr, mask=mask)
     data_size = size(data_work_arr)
 
-    if ((.not. present(sorted)) .or. (.not. sorted)) then
+    to_sort = .true.
+    ! Can't be a single if statement since Fortran doesn't have short-circuiting
+    if (present(sorted)) then
+       if (sorted) then
+          to_sort = .false.
+       end if
+    end if
+
+    if (to_sort) then
        call array_quicksort(data_work_arr, 1, size(data_work_arr))
     end if
 

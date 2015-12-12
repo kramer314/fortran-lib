@@ -105,14 +105,18 @@ contains
        log_file_unit = -1
     end if
 
-    if (present(log_stdout) .and. log_stdout) then
-       log_to_stdout = .true.
+    if (present(log_stdout)) then
+       if (log_stdout) then
+          log_to_stdout = .true.
+       end if
     else
        log_to_stdout = .false.
     end if
 
-    if (present(log_stderr) .and. log_stderr) then
-       log_to_stderr = .true.
+    if (present(log_stderr)) then
+       if (log_stderr) then
+          log_to_stderr = .true.
+       end if
     else
        log_to_stderr = .false.
     end if
