@@ -115,7 +115,7 @@ contains
 
   contains
 
-    logical function is_valid_param(str) result(val)
+    pure logical function is_valid_param(str) result(val)
       ! Check if the parameter string is valid
       !
       ! str :: parameter string

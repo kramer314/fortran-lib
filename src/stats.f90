@@ -38,7 +38,7 @@ contains
 
   end subroutine stats_residuals
 
-  real(dp) function stats_mean(data_arr, mask) result(val)
+  pure real(dp) function stats_mean(data_arr, mask) result(val)
     ! Calculate mean
     !
     ! data_arr :: array of data values
@@ -137,7 +137,7 @@ contains
 
   end function stats_upper_quartile
 
-  real(dp) function stats_max(data_arr, mask) result(val)
+  pure real(dp) function stats_max(data_arr, mask) result(val)
     ! Find max value
     !
     ! data_arr :: array of data values
@@ -149,7 +149,7 @@ contains
 
   end function stats_max
 
-  real(dp) function stats_min(data_arr, mask) result(val)
+  pure real(dp) function stats_min(data_arr, mask) result(val)
     ! Find min value
     !
     ! data_arr :: array of data values
@@ -212,7 +212,7 @@ contains
 
   end function stats_mean_abs_err
 
-  real(dp) function stats_mean_sq_err(resid_arr, mask) result(val)
+  pure real(dp) function stats_mean_sq_err(resid_arr, mask) result(val)
     ! Calculate mean squared error from residuals
     !
     ! resid_arr :: residual array
@@ -232,7 +232,7 @@ contains
 
   end function stats_mean_sq_err
 
-  real(dp) function stats_variance(data_arr, mask) result(val)
+  pure real(dp) function stats_variance(data_arr, mask) result(val)
     ! Calculate variance
     !
     ! data_arr :: array of data values
@@ -259,7 +259,7 @@ contains
 
   end function stats_variance
 
-  real(dp) function stats_stdev(data_arr, mask) result(val)
+  pure real(dp) function stats_stdev(data_arr, mask) result(val)
     ! Compute standard deviation
     !
     ! data :: array of data values

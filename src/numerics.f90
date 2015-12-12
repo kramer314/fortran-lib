@@ -213,10 +213,10 @@ contains
     ! Explicit interface for external differential equation system
     interface
 
-       function f(y, t) result(val)
+       pure function f(y, t) result(val)
          import dp
-         real(dp) :: y(:)
-         real(dp) :: t
+         real(dp), intent(in) :: y(:)
+         real(dp), intent(in) :: t
          real(dp) :: val(size(y))
        end function f
 
@@ -241,10 +241,10 @@ contains
 
     interface
 
-       function f(y, t) result(val)
+       pure function f(y, t) result(val)
          import dp
-         complex(dp) :: y(:)
-         real(dp) :: t
+         complex(dp), intent(in) :: y(:)
+         real(dp), intent(in) :: t
          complex(dp) :: val(size(y))
        end function f
 
@@ -259,7 +259,7 @@ contains
 
   end subroutine numerics_rk4_cmplx
 
-  real(dp) function numerics_cmplx_phase(z) result(val)
+  pure real(dp) function numerics_cmplx_phase(z) result(val)
     ! Get the phase of a complex number z = A exp(i phi), where A determines the
     ! magnitude, and phi determines the phase angle.
     !
@@ -270,7 +270,7 @@ contains
 
   end function numerics_cmplx_phase
 
-  real(dp) function numerics_trapz(f_arr, dx) result(val)
+  pure real(dp) function numerics_trapz(f_arr, dx) result(val)
     ! Trapezoidal integration scheme
     !
     ! f_arr :: array-valued function to integrate

@@ -251,13 +251,13 @@ contains
 
   end subroutine exception_raise_debug
 
-  integer function exception_get_break_level() result(val)
+  pure integer function exception_get_break_level() result(val)
     ! Get current exception breaking threshold
     val = break_level
 
   end function exception_get_break_level
 
-  integer function exception_get_log_level() result(val)
+  pure integer function exception_get_log_level() result(val)
     ! Get current exception logging threshold
     val = log_level
 

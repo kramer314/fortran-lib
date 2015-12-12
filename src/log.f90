@@ -166,7 +166,7 @@ contains
 
   end subroutine log_message
 
-  function log_timestamp() result(stamp)
+  pure function log_timestamp() result(stamp)
     ! Private function to generate a formatted timestamp for logging
     character(:), allocatable :: stamp
     character(:), allocatable :: date

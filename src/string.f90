@@ -29,7 +29,7 @@ module string
 
 contains
 
-  function string_dp_real(num, fmt) result(val)
+  pure function string_dp_real(num, fmt) result(val)
     ! Get string representation of double precision real
     !
     ! num :: double precision real value to convert
@@ -51,7 +51,7 @@ contains
 
   end function string_dp_real
 
-  function string_int(num, fmt) result(val)
+  pure function string_int(num, fmt) result(val)
     ! Get string representation of integer
     !
     ! num :: integer value to convert
@@ -73,7 +73,7 @@ contains
 
   end function string_int
 
-  function string_logical(bool, full) result(val)
+  pure function string_logical(bool, full) result(val)
     ! Get string representation of logical value
     !
     ! bool :: logical value to convert

@@ -77,7 +77,7 @@ contains
     ! anything
   end subroutine unittest_cleanup
 
-  logical function unittest_assert_equal_dp(a, b, eps) result(val)
+  pure logical function unittest_assert_equal_dp(a, b, eps) result(val)
     ! Equality test for double precision reals
     !
     ! a :: 1st value
@@ -95,7 +95,7 @@ contains
 
   end function unittest_assert_equal_dp
 
-  logical function unittest_assert_equal_int(a, b) result(val)
+  pure logical function unittest_assert_equal_int(a, b) result(val)
     ! Equality test for integers
     !
     ! a :: 1st value
@@ -107,7 +107,7 @@ contains
 
   end function unittest_assert_equal_int
 
-  logical function unittest_assert_not_equal_dp(a, b, eps) result(val)
+  pure logical function unittest_assert_not_equal_dp(a, b, eps) result(val)
     ! Not equality test for double precision reals
     !
     ! a :: 1st value
@@ -125,7 +125,7 @@ contains
 
   end function unittest_assert_not_equal_dp
 
-  logical function unittest_assert_not_equal_int(a, b) result(val)
+  pure logical function unittest_assert_not_equal_int(a, b) result(val)
     ! Not equality test for integers
     !
     ! a :: 1st value
@@ -137,7 +137,7 @@ contains
 
   end function unittest_assert_not_equal_int
 
-  logical function unittest_assert_true(a) result(val)
+  pure logical function unittest_assert_true(a) result(val)
     ! Boolean true test
     !
     ! a :: logical / boolean value
@@ -147,7 +147,7 @@ contains
 
   end function unittest_assert_true
 
-  logical function unittest_assert_false(a) result(val)
+  pure logical function unittest_assert_false(a) result(val)
     ! Boolean false test
     !
     ! a :: logical / boolean value
@@ -157,7 +157,7 @@ contains
 
   end function unittest_assert_false
 
-  logical function unittest_assert_le_dp(a, b, eps) result(val)
+  pure logical function unittest_assert_le_dp(a, b, eps) result(val)
     ! Less than or equal test for double precision reals
     !
     ! a :: 1st value
@@ -175,7 +175,7 @@ contains
 
   end function unittest_assert_le_dp
 
-  logical function unittest_assert_lt_dp(a, b) result(val)
+  pure logical function unittest_assert_lt_dp(a, b) result(val)
     ! Less than test for double precision reals
     !
     ! a :: 1st value
@@ -187,7 +187,7 @@ contains
 
   end function unittest_assert_lt_dp
 
-  logical function unittest_assert_ge_dp(a, b, eps) result(val)
+  pure logical function unittest_assert_ge_dp(a, b, eps) result(val)
     ! Greater than or equal test for double precision reals
     !
     ! a :: 1st value
@@ -205,7 +205,7 @@ contains
 
   end function unittest_assert_ge_dp
 
-  logical function unittest_assert_gt_dp(a, b) result(val)
+  pure logical function unittest_assert_gt_dp(a, b) result(val)
     ! Greater than test for double precision reals
     !
     ! a :: 1st value
@@ -217,7 +217,7 @@ contains
 
   end function unittest_assert_gt_dp
 
-  logical function unittest_assert_le_int(a, b) result(val)
+  pure logical function unittest_assert_le_int(a, b) result(val)
     ! Less than or equal test for integers
     !
     ! a :: 1st value
@@ -229,7 +229,7 @@ contains
 
   end function unittest_assert_le_int
 
-  logical function unittest_assert_lt_int(a, b) result(val)
+  pure logical function unittest_assert_lt_int(a, b) result(val)
     ! Less than test for integers
     !
     ! a :: 1st value
@@ -241,7 +241,7 @@ contains
 
   end function unittest_assert_lt_int
 
-  logical function unittest_assert_ge_int(a, b) result(val)
+  pure logical function unittest_assert_ge_int(a, b) result(val)
     ! Greater than or equal test for integers
     !
     ! a :: 1st value
@@ -253,7 +253,7 @@ contains
 
   end function unittest_assert_ge_int
 
-  logical function unittest_assert_gt_int(a, b) result(val)
+  pure logical function unittest_assert_gt_int(a, b) result(val)
     ! Greater than test for integers
     !
     ! a :: 1st value
