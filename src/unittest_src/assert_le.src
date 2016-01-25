@@ -1,0 +1,5 @@
+if (present(eps)) then
+  val = (unittest_assert_lt(a, b, eps) .or. unittest_assert_equal(a, b, eps))
+else
+  val = (unittest_assert_lt(a, b) .or. unittest_assert_equal(a,b))
+end if

@@ -3,7 +3,7 @@
 
 ! Basic statistics functionality
 module stats
-  use globvars
+  use globvars, only: dp, sp, ip
   use array, only: array_quicksort, array_pack
 
   implicit none
@@ -11,22 +11,81 @@ module stats
   private
 
   public :: stats_residuals
+  interface stats_residuals
+     module procedure stats_residuals_dp
+     module procedure stats_residuals_sp
+  end interface stats_residuals
+
   public :: stats_mean
+  interface stats_mean
+     module procedure stats_mean_dp
+     module procedure stats_mean_sp
+  end interface
+
   public :: stats_fivenum
+  interface stats_fivenum
+     module procedure stats_fivenum_dp
+     module procedure stats_fivenum_sp
+  end interface stats_fivenum
+
   public :: stats_max
+  interface stats_max
+     module procedure stats_max_dp
+     module procedure stats_max_sp
+  end interface stats_max
+
   public :: stats_min
+  interface stats_min
+     module procedure stats_min_dp
+     module procedure stats_min_sp
+  end interface stats_min
+
   public :: stats_median
+  interface stats_median
+     module procedure stats_median_dp
+     module procedure stats_median_sp
+  end interface stats_median
+
   public :: stats_lower_quartile
+  interface stats_lower_quartile
+     module procedure stats_lower_quartile_dp
+     module procedure stats_lower_quartile_sp
+  end interface stats_lower_quartile
+
   public :: stats_upper_quartile
+  interface stats_upper_quartile
+     module procedure stats_upper_quartile_dp
+     module procedure stats_upper_quartile_sp
+  end interface stats_upper_quartile
+
   public :: stats_mean_sq_err
+  interface stats_mean_sq_err
+     module procedure stats_mean_sq_err_dp
+     module procedure stats_mean_sq_err_sp
+  end interface stats_mean_sq_err
+
   public :: stats_mean_abs_err
+  interface stats_mean_abs_err
+     module procedure stats_mean_abs_err_dp
+     module procedure stats_mean_abs_err_sp
+  end interface stats_mean_abs_err
+
   public :: stats_variance
+  interface stats_variance
+     module procedure stats_variance_dp
+     module procedure stats_variance_sp
+  end interface stats_variance
+
   public :: stats_stdev
+  interface stats_stdev
+     module procedure stats_stdev_dp
+     module procedure stats_stdev_sp
+  end interface stats_stdev
 
 contains
 
-  subroutine stats_residuals(data_arr, theor_arr, resid_arr)
-    ! Calculate residuals
+  subroutine stats_residuals_dp(data_arr, theor_arr, resid_arr)
+    ! Calculate residuals, for double precision real arrays
     !
     ! data_arr :: array of experimental data values
     ! theor_arr :: array of theoretical values, parallel to data_arr
@@ -34,32 +93,38 @@ contains
     real(dp), intent(in) :: data_arr(:), theor_arr(:)
     real(dp), intent(inout) :: resid_arr(:)
 
-    resid_arr(:) = abs(data_arr(:) - theor_arr(:))
+    include "./stats_src/residuals.src"
+  end subroutine stats_residuals_dp
 
-  end subroutine stats_residuals
+  subroutine stats_residuals_sp(data_arr, theor_arr, resid_arr)
+    ! Duplicate of stats_residuals, but for single precision real arrays
+    real(sp), intent(in) :: data_arr(:), theor_arr(:)
+    real(sp), intent(inout) :: resid_arr(:)
 
-  pure real(dp) function stats_mean(data_arr, mask) result(val)
-    ! Calculate mean
+    include "./stats_src/residuals.src"
+  end subroutine stats_residuals_sp
+
+  pure real(dp) function stats_mean_dp(data_arr, mask) result(val)
+    ! Calculate mean of array of double precision values
     !
     ! data_arr :: array of data values
     ! mask :: logical masking array
     real(dp), intent(in) :: data_arr(:)
     logical, intent(in), optional :: mask(:)
 
-    integer :: n
+    include "./stats_src/mean.src"
+  end function stats_mean_dp
 
-    if (present(mask)) then
-       n = count(mask)
-       val = sum(data_arr, mask=mask) / n
-    else
-       n = size(data_arr)
-       val = sum(data_arr) / n
-    end if
+  pure real(sp) function stats_mean_sp(data_arr, mask) result(val)
+    ! Duplicate of stats_mean_dp, but for single precision reals
+    real(sp), intent(in) :: data_arr(:)
+    logical, intent(in), optional :: mask(:)
 
-  end function stats_mean
+    include "./stats_src/mean.src"
+  end function stats_mean_sp
 
-  subroutine stats_fivenum(data_arr, summary_arr, mask, sorted)
-    ! Generate five-number summary statistics
+  subroutine stats_fivenum_dp(data_arr, summary_arr, mask, sorted)
+    ! Generate five-number summary statistics, for double precision real arrays
     !
     ! data_arr :: array of data values
     ! summary_arr :: 5-element array for summary values, with entries:
@@ -73,17 +138,28 @@ contains
 
     real(dp) :: min, lq, med, uq, max
 
-    min = stats_min(data_arr, mask=mask)
-    lq = stats_lower_quartile(data_arr, mask=mask, sorted=sorted)
-    med= stats_median(data_arr, mask=mask, sorted=sorted)
-    uq = stats_upper_quartile(data_arr, mask=mask, sorted=sorted)
-    max = stats_max(data_arr, mask=mask)
+    include "./stats_src/fivenum.src"
 
     summary_arr = [min, lq, med, uq, max]
 
-  end subroutine stats_fivenum
+  end subroutine stats_fivenum_dp
 
-  real(dp) function stats_lower_quartile(data_arr, mask, sorted) result(val)
+  subroutine stats_fivenum_sp(data_arr, summary_arr, mask, sorted)
+    ! Duplicate of stats_fivenum_dp, but for single precision real arrays
+    real(sp), intent(in) :: data_arr(:)
+    real(sp), intent(out) :: summary_arr(5)
+    logical, intent(in), optional :: mask(:)
+    logical, intent(in), optional :: sorted
+
+    real(sp) :: min, lq, med, uq, max
+
+    include "./stats_src/fivenum.src"
+
+    summary_arr = [min, lq, med, uq, max]
+
+  end subroutine stats_fivenum_sp
+
+  real(dp) function stats_lower_quartile_dp(data_arr, mask, sorted) result(val)
     ! Calculate lower quartile value
     !
     ! data_arr :: array of data values
@@ -93,33 +169,21 @@ contains
     logical, intent(in), optional :: mask(:)
     logical, intent(in), optional :: sorted
 
-    real(dp), allocatable :: data_work_arr(:)
-    logical :: to_sort
-    integer :: data_size
+    include "./stats_src/quartile_dp.src"
+    include "./stats_src/lower_quartile.src"
+  end function stats_lower_quartile_dp
 
-    call array_pack(data_arr, data_work_arr, mask=mask)
-    data_size = size(data_work_arr)
+  real(sp) function stats_lower_quartile_sp(data_arr, mask, sorted) result(val)
+    ! Duplicate of stats_lower_quartile_dp, but for single precision reals
+    real(sp), intent(in) :: data_arr(:)
+    logical, intent(in), optional :: mask(:)
+    logical, intent(in), optional :: sorted
 
-    to_sort = .true.
-    ! Can't be a single if statement since Fortran doesn't have short-circuiting
-    if (present(sorted)) then
-       if (sorted) then
-          to_sort = .false.
-       end if
-    end if
+    include "./stats_src/quartile_sp.src"
+    include "./stats_src/lower_quartile.src"
+  end function stats_lower_quartile_sp
 
-    if (to_sort) then
-       call array_quicksort(data_work_arr, 1, size(data_work_arr))
-    end if
-
-    ! lower quartile is median of values to the left of the median
-    val = stats_median(data_arr(:data_size / 2), sorted=.true.)
-
-    deallocate(data_work_arr)
-
-  end function stats_lower_quartile
-
-  real(dp) function stats_upper_quartile(data_arr, mask, sorted) result(val)
+  real(dp) function stats_upper_quartile_dp(data_arr, mask, sorted) result(val)
     ! Calculate upper quartile value
     !
     ! data_arr :: array of data values
@@ -129,58 +193,57 @@ contains
     logical, intent(in), optional :: mask(:)
     logical, intent(in), optional :: sorted
 
-    real(dp), allocatable :: data_work_arr(:)
-    logical :: to_sort
-    integer :: data_size
+    include "./stats_src/quartile_dp.src"
+    include "./stats_src/upper_quartile.src"
+  end function stats_upper_quartile_dp
 
-    call array_pack(data_arr, data_work_arr, mask=mask)
-    data_size = size(data_work_arr)
+  real(sp) function stats_upper_quartile_sp(data_arr, mask, sorted) result(val)
+    ! Duplicate of stats_upper_quartile_dp, but for single precision reals
+    real(sp), intent(in) :: data_arr(:)
+    logical, intent(in), optional :: mask(:)
+    logical, intent(in), optional :: sorted
 
-    to_sort = .true.
-    ! Can't be a single if statement since Fortran doesn't have short-circuiting
-    if (present(sorted)) then
-       if (sorted) then
-          to_sort = .false.
-       end if
-    end if
+    include "./stats_src/quartile_sp.src"
+    include "./stats_src/upper_quartile.src"
+  end function stats_upper_quartile_sp
 
-    if (to_sort) then
-       call array_quicksort(data_work_arr, 1, size(data_work_arr))
-    end if
+  pure real(dp) function stats_max_dp(data_arr, mask) result(val)
+    ! Find max value, for double precision real arrays
+    real(dp), intent(in) :: data_arr(:)
+    logical, intent(in), optional :: mask(:)
 
-    ! upper quartile value is the median of values to the right of the median
-    val = stats_median(data_arr(data_size / 2:), sorted=.true.)
+    include "./stats_src/max.src"
+  end function stats_max_dp
 
-    deallocate(data_work_arr)
+  pure real(sp) function stats_max_sp(data_arr, mask) result(val)
+    ! Duplicate of stats_max_dp, but for single precision reals
+    real(sp), intent(in) :: data_arr(:)
+    logical, intent(in), optional :: mask(:)
 
-  end function stats_upper_quartile
+    include "./stats_src/max.src"
+  end function stats_max_sp
 
-  pure real(dp) function stats_max(data_arr, mask) result(val)
-    ! Find max value
+  pure real(dp) function stats_min_dp(data_arr, mask) result(val)
+    ! Find min value, for double precision real arrays
     !
     ! data_arr :: array of data values
     ! mask :: logical masking array
     real(dp), intent(in) :: data_arr(:)
     logical, intent(in), optional :: mask(:)
 
-    val = maxval(data_arr, mask=mask)
+    include "./stats_src/min.src"
+  end function stats_min_dp
 
-  end function stats_max
-
-  pure real(dp) function stats_min(data_arr, mask) result(val)
-    ! Find min value
-    !
-    ! data_arr :: array of data values
-    ! mask :: logical masking array
-    real(dp), intent(in) :: data_arr(:)
+  pure real(sp) function stats_min_sp(data_arr, mask) result(val)
+    ! Duplicate of stats_min_sp, but for single precision reals
+    real(sp), intent(in) :: data_arr(:)
     logical, intent(in), optional :: mask(:)
 
-    val = minval(data_arr, mask=mask)
+    include "./stats_src/min.src"
+  end function stats_min_sp
 
-  end function stats_min
-
-  real(dp) function stats_median(data_arr, mask, sorted) result(val)
-    ! Calculate median
+  real(dp) function stats_median_dp(data_arr, mask, sorted) result(val)
+    ! Calculate median of double precision real array
     !
     ! data_arr :: array of data values
     ! mask :: logical masking array
@@ -190,27 +253,27 @@ contains
     logical, intent(in), optional :: sorted
 
     real(dp), allocatable :: data_work_arr(:)
-    integer :: data_size
 
-    call array_pack(data_arr, data_work_arr, mask=mask)
-    data_size = size(data_work_arr)
-
-    if (.not. sorted) then
-       call array_quicksort(data_work_arr, 1, size(data_work_arr))
-    end if
-
-    if (mod(data_size, 2) .eq. 0) then
-       val = 0.5_dp * (data_work_arr(data_size / 2) + &
-            data_work_arr(data_size / 2 + 1))
-    else
-       val = data_work_arr( (data_size - 1) / 2 + 1 )
-    end if
+    include "./stats_src/median.src"
 
     deallocate(data_work_arr)
 
-  end function stats_median
+  end function stats_median_dp
 
-  real(dp) function stats_mean_abs_err(resid_arr, mask) result(val)
+  real(sp) function stats_median_sp(data_arr, mask, sorted) result(val)
+    real(sp), intent(in) :: data_arr(:)
+    logical, intent(in), optional :: mask(:)
+    logical, intent(in), optional :: sorted
+
+    real(sp), allocatable :: data_work_arr(:)
+
+    include "./stats_src/median.src"
+
+    deallocate(data_work_arr)
+
+  end function stats_median_sp
+
+  real(dp) function stats_mean_abs_err_dp(resid_arr, mask) result(val)
     ! Calculate mean absolute error from residuals
     !
     ! resid_arr :: residual array
@@ -218,19 +281,21 @@ contains
     real(dp), intent(in) :: resid_arr(:)
     logical, intent(in), optional :: mask(:)
 
-    integer :: n
+    include "./stats_src/mean_abs_err.src"
+  end function stats_mean_abs_err_dp
 
-    if (present(mask)) then
-       n = count(mask)
-       val = sum(resid_arr, mask=mask) / n
-    else
-       n = size(resid_arr)
-       val = sum(resid_arr) / n
-    end if
+  real(sp) function stats_mean_abs_err_sp(resid_arr, mask) result(val)
+    ! Calculate mean absolute error from residuals
+    !
+    ! resid_arr :: residual array
+    ! mask :: logical masking array
+    real(sp), intent(in) :: resid_arr(:)
+    logical, intent(in), optional :: mask(:)
 
-  end function stats_mean_abs_err
+    include "./stats_src/mean_abs_err.src"
+  end function stats_mean_abs_err_sp
 
-  pure real(dp) function stats_mean_sq_err(resid_arr, mask) result(val)
+  pure real(dp) function stats_mean_sq_err_dp(resid_arr, mask) result(val)
     ! Calculate mean squared error from residuals
     !
     ! resid_arr :: residual array
@@ -238,19 +303,21 @@ contains
     real(dp), intent(in) :: resid_arr(:)
     logical, intent(in), optional :: mask(:)
 
-    integer :: n
+    include "./stats_src/mean_sq_err.src"
+  end function stats_mean_sq_err_dp
 
-    if (present(mask)) then
-       n = count(mask)
-       val = sum(resid_arr**2, mask=mask) / n
-    else
-       n = size(resid_arr)
-       val = sum(resid_arr**2) / n
-    end if
+  pure real(sp) function stats_mean_sq_err_sp(resid_arr, mask) result(val)
+    ! Calculate mean squared error from residuals
+    !
+    ! resid_arr :: residual array
+    ! mask :: logical masking array
+    real(sp), intent(in) :: resid_arr(:)
+    logical, intent(in), optional :: mask(:)
 
-  end function stats_mean_sq_err
+    include "./stats_src/mean_sq_err.src"
+  end function stats_mean_sq_err_sp
 
-  pure real(dp) function stats_variance(data_arr, mask) result(val)
+  pure real(dp) function stats_variance_dp(data_arr, mask) result(val)
     ! Calculate variance
     !
     ! data_arr :: array of data values
@@ -259,38 +326,37 @@ contains
     logical, intent(in), optional :: mask(:)
 
     real(dp) :: mean
-    integer :: n
 
+    include "./stats_src/variance.src"
+  end function stats_variance_dp
 
-    if (present(mask)) then
-       n = count(mask)
-       mean = stats_mean(data_arr, mask=mask)
-       ! Biased sample variance
-       val = sum(data_arr**2, mask=mask) / n - mean**2
-       ! Convert to unbiased sample variance
-       val = n / (n - 1.0_dp) * val
-    else
-       n = size(data_arr)
-       mean = stats_mean(data_arr)
-       val = sum((data_arr - mean)**2) / (n - 1)
-    end if
+  pure real(sp) function stats_variance_sp(data_arr, mask) result(val)
+    ! Duplicate of stats_variance_dp, but for single precision reals
+    real(sp), intent(in) :: data_arr(:)
+    logical, intent(in), optional :: mask(:)
 
-  end function stats_variance
+    real(sp) :: mean
 
-  pure real(dp) function stats_stdev(data_arr, mask) result(val)
-    ! Compute standard deviation
+    include "./stats_src/variance.src"
+  end function stats_variance_sp
+
+  pure real(dp) function stats_stdev_dp(data_arr, mask) result(val)
+    ! Compute standard deviation, for double precision real arrays
     !
     ! data :: array of data values
     ! mask :: logical masking array
     real(dp), intent(in) :: data_arr(:)
     logical, intent(in), optional :: mask(:)
 
-    if (present(mask)) then
-       val = sqrt(stats_variance(data_arr, mask=mask))
-    else
-       val = sqrt(stats_variance(data_arr))
-    end if
+    include "./stats_src/stdev.src"
+  end function stats_stdev_dp
 
-  end function stats_stdev
+  pure real(sp) function stats_stdev_sp(data_arr, mask) result(val)
+    ! Duplicate of stats_stdev_dp, but for single precision reals
+    real(sp), intent(in) :: data_arr(:)
+    logical, intent(in), optional :: mask(:)
+
+    include "./stats_src/stdev.src"
+  end function stats_stdev_sp
 
 end module stats

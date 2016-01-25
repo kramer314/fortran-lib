@@ -1,0 +1,5 @@
+if (present(mask)) then
+  val = sqrt(stats_variance(data_arr, mask=mask))
+else
+  val = sqrt(stats_variance(data_arr))
+end if

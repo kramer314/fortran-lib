@@ -1,0 +1,8 @@
+integer(ip) :: i_x, n_x
+
+n_x = size(x_arr)
+dx = (x_max - x_min) / n_x
+
+do i_x = 1, n_x
+  x_arr(i_x) = x_min + i_x * dx
+end do

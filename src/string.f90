@@ -4,7 +4,7 @@
 ! This module implements basic string conversions.
 module string
 
-  use globvars, only: dp, dp_format, int_format
+  use globvars, only: dp, dp_format, sp, sp_format, ip, int_format
 
   implicit none
 
@@ -16,6 +16,7 @@ module string
   interface string_val
      ! Get string representation of values
      module procedure string_dp_real
+     module procedure string_sp_real
      module procedure string_int
      module procedure string_logical
   end interface string_val
@@ -23,6 +24,7 @@ module string
   interface string_to_val
      ! Convert string representations to values
      module procedure string_to_dp_real
+     module procedure string_to_sp_real
      module procedure string_to_int
      module procedure string_to_logical
   end interface string_to_val
@@ -51,6 +53,28 @@ contains
 
   end function string_dp_real
 
+  pure function string_sp_real(num, fmt) result(val)
+    ! Get string representation of double precision real
+    !
+    ! num :: double precision real value to convert
+    ! fmt :: optional custom format string
+    character(:), allocatable :: val
+
+    real(sp), intent(in) :: num
+    character(*), optional, intent(in) :: fmt
+
+    character(:), allocatable :: tmp
+
+    if (present(fmt)) then
+       write(tmp, fmt) num
+    else
+       write(tmp, sp_format) num
+    end if
+
+    val = trim(adjustl(tmp))
+
+  end function string_sp_real
+
   pure function string_int(num, fmt) result(val)
     ! Get string representation of integer
     !
@@ -58,7 +82,7 @@ contains
     ! fmt :: optional custom format string
     character(:), allocatable :: val
 
-    integer, intent(in) :: num
+    integer(ip), intent(in) :: num
     character(*), optional, intent(in) :: fmt
 
     character(:), allocatable :: tmp
@@ -113,7 +137,7 @@ contains
     ! str :: string to convert
     ! val :: output value
     character(*), intent(in) :: str
-    integer, intent(out) :: val
+    integer(ip), intent(out) :: val
 
     read(str, *) val
   end subroutine string_to_int
@@ -128,6 +152,17 @@ contains
 
     read(str, *) val
   end subroutine string_to_dp_real
+
+  subroutine string_to_sp_real(str, val)
+    ! Get single precision real value from string
+    !
+    ! str :: string to convert
+    ! val :: output value
+    character(*), intent(in) :: str
+    real(sp), intent(out) :: val
+
+    read(str, *) val
+  end subroutine string_to_sp_real
 
   subroutine string_to_logical(str, val)
     ! Get logical value from string

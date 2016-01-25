@@ -1,0 +1,9 @@
+integer(ip) :: n
+
+if (present(mask)) then
+  n = count(mask)
+  val = sum(resid_arr, mask=mask) / n
+else
+  n = size(resid_arr)
+  val = sum(resid_arr) / n
+end if

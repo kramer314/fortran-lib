@@ -1,0 +1,4 @@
+! upper quartile value is the median of values to the right of the median
+val = stats_median(data_work_arr(data_size / 2:), sorted=.true.)
+
+deallocate(data_work_arr)

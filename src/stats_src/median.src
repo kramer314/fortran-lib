@@ -1,0 +1,14 @@
+integer(ip) :: data_size
+
+call array_pack(data_arr, data_work_arr, mask=mask)
+data_size = size(data_work_arr)
+
+if (.not. sorted) then
+  call array_quicksort(data_work_arr, 1, size(data_work_arr))
+end if
+
+if (mod(data_size, 2) .eq. 0) then
+  val = stats_mean( [data_work_arr(data_size / 2), data_work_arr(data_size / 2 + 1)] )
+else
+  val = data_work_arr( (data_size - 1) / 2 + 1 )
+end if

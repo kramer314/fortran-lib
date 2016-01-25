@@ -1,0 +1,6 @@
+n = size(arr)
+j = n
+do i = 1, n / 2
+  call array_swap(arr, i, j)
+  j = j -1
+end do

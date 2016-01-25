@@ -19,6 +19,8 @@ module log
 
   use iso_fortran_env, only: output_unit, error_unit
 
+  use globvars, only: ip
+
   implicit none
 
   private
@@ -61,8 +63,8 @@ contains
     ! If the level is not properly specifies, the message is not logeed and a
     ! WARNING-level message is sent to stderr.
     character(*), intent(in) :: msg
-    integer, intent(in) :: unit
-    integer, intent(in) :: level
+    integer(ip), intent(in) :: unit
+    integer(ip), intent(in) :: level
 
     select case(level)
 
@@ -95,7 +97,7 @@ contains
     ! msg :: message to log
     ! unit :: log file unit
     character(*), intent(in) :: msg
-    integer, intent(in) :: unit
+    integer(ip), intent(in) :: unit
 
     call log_message(msg, "CRITICAL", unit)
 
@@ -107,7 +109,7 @@ contains
     ! msg :: message to log
     ! unit :: log file unit
     character(*), intent(in) :: msg
-    integer, intent(in) :: unit
+    integer(ip), intent(in) :: unit
 
     call log_message(msg, "ERROR", unit)
 
@@ -119,7 +121,7 @@ contains
     ! msg :: message to log
     ! unit :: log file unit
     character(*), intent(in) :: msg
-    integer, intent(in) :: unit
+    integer(ip), intent(in) :: unit
 
     call log_message(msg, "WARNING", unit)
 
@@ -131,7 +133,7 @@ contains
     ! msg :: message to log
     ! unit :: log file unit
     character(*), intent(in) :: msg
-    integer, intent(in) :: unit
+    integer(ip), intent(in) :: unit
 
     call log_message(msg, "INFO", unit)
 
@@ -143,7 +145,7 @@ contains
     ! msg :: message to log
     ! unit :: log file unit
     character(*), intent(in) :: msg
-    integer, intent(in) :: unit
+    integer(ip), intent(in) :: unit
 
     call log_message(msg, "DEBUG", unit)
 
@@ -157,7 +159,7 @@ contains
     ! unit :: log file unit
     character(*), intent(in) :: msg
     character(*), intent(in) :: level_msg
-    integer, intent(in) :: unit
+    integer(ip), intent(in) :: unit
 
     character(:), allocatable :: log_msg
 

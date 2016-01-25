@@ -18,7 +18,7 @@
 !   call config_cleanup()
 module config
 
-  use globvars, only: dp
+  use globvars, only: dp, sp, ip
   use string, only: string_to_val
 
   implicit none
@@ -33,6 +33,7 @@ module config
      ! Get parameter from config file
      module procedure config_get_int
      module procedure config_get_real_dp
+     module procedure config_get_real_sp
      module procedure config_get_logical
      module procedure config_get_char
   end interface config_get_param
@@ -40,9 +41,9 @@ module config
   ! Default config file line length
   integer, parameter :: default_line_length = 80
   ! Number of parameters found in config file
-  integer :: num_params
+  integer(ip) :: num_params
   ! Set config file line length
-  integer :: line_length
+  integer(ip) :: line_length
 
   ! Array holding parameters lines from config file
   character(:), allocatable :: param_lines(:)
@@ -56,11 +57,11 @@ contains
     ! max_line_length :: optional max length of lines in config file,
     !  which overwrites the default of 80 characters.
     character(*), intent(in) :: filename
-    integer, intent(in), optional :: max_line_length
+    integer(ip), intent(in), optional :: max_line_length
 
-    integer :: file_unit
-    integer :: io_err
-    integer :: i_param
+    integer(ip) :: file_unit
+    integer(ip) :: io_err
+    integer(ip) :: i_param
 
     character(:), allocatable :: tmp_readin
 
@@ -146,17 +147,10 @@ contains
     ! val :: integer variable to be set with parameter value
     ! found :: logical indicating whether val has been set
     character(*), intent(in) :: param_name
-    integer, intent(out) :: val
+    integer(ip), intent(out) :: val
     logical, intent(out) :: found
 
-    character(line_length) :: param_str
-
-    call config_get_param_str(param_name, param_str, found)
-
-    if (found) then
-       call string_to_val(param_str, val)
-    end if
-
+    include "./config_src/get.src"
   end subroutine config_get_int
 
   subroutine config_get_real_dp(param_name, val, found)
@@ -169,6 +163,19 @@ contains
     real(dp), intent(out) :: val
     logical, intent(out) :: found
 
+    include "./config_src/get.src"
+  end subroutine config_get_real_dp
+
+  subroutine config_get_real_sp(param_name, val, found)
+    ! Get double precision real parameter
+    !
+    ! param_name :: name of parameter to find
+    ! val :: double precision real variable to be set with parameter value
+    ! found :: logical indicating whether val has been set
+    character(*), intent(in) :: param_name
+    real(sp), intent(out) :: val
+    logical, intent(out) :: found
+
     character(line_length) :: param_str
 
     call config_get_param_str(param_name, param_str, found)
@@ -176,7 +183,7 @@ contains
        call string_to_val(param_str, val)
     end if
 
-  end subroutine config_get_real_dp
+  end subroutine config_get_real_sp
 
   subroutine config_get_char(param_name, val, found)
     ! Get character parameter
@@ -207,13 +214,7 @@ contains
     logical, intent(out) :: val
     logical, intent(out) :: found
 
-    character(line_length) :: param_str
-
-    call config_get_param_str(param_name, param_str, found)
-    if (found) then
-       call string_to_val(param_str, val)
-    end if
-
+    include "./config_src/get.src"
   end subroutine config_get_logical
 
   subroutine config_get_param_str(param_name, str, found)
@@ -226,8 +227,8 @@ contains
     character(*), intent(out) :: str
     logical, intent(out) :: found
 
-    integer :: i_param
-    integer :: val_idex
+    integer(ip) :: i_param
+    integer(ip) :: val_idex
 
     found = .false.
     do i_param = 1, num_params

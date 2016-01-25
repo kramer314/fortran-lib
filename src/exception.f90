@@ -23,6 +23,7 @@
 ! set automatically in exception_[LEVEL] variables in this module).
 module exception
 
+  use globvars, only: ip
   use log, only: log_log, log_stderr, log_stdout, log_critical, log_error, &
        log_warning, log_info, log_debug
 
@@ -54,17 +55,17 @@ module exception
   public :: exception_warning
   public :: exception_info
   public :: exception_debug
-  integer, parameter :: exception_critical = log_critical
-  integer, parameter :: exception_error = log_error
-  integer, parameter :: exception_warning = log_warning
-  integer, parameter :: exception_info = log_info
-  integer, parameter :: exception_debug = log_debug
+  integer(ip), parameter :: exception_critical = log_critical
+  integer(ip), parameter :: exception_error = log_error
+  integer(ip), parameter :: exception_warning = log_warning
+  integer(ip), parameter :: exception_info = log_info
+  integer(ip), parameter :: exception_debug = log_debug
 
   ! Internal module variables
-  integer :: break_level
-  integer :: log_level
+  integer(ip) :: break_level
+  integer(ip) :: log_level
 
-  integer :: log_file_unit
+  integer(ip) :: log_file_unit
   logical :: log_to_stdout
   logical :: log_to_stderr
 
@@ -81,9 +82,9 @@ contains
     ! log_file_unit :: unit number for open log file
     ! log_to_stdout :: flag for logging to stdout (as well as other locations)
     ! log_to_stderr :: flag for logging to stderr (as well as other locations)
-    integer, optional, intent(in) :: break_lvl
-    integer, optional, intent(in) :: log_lvl
-    integer, optional, intent(in) :: log_unit
+    integer(ip), optional, intent(in) :: break_lvl
+    integer(ip), optional, intent(in) :: log_lvl
+    integer(ip), optional, intent(in) :: log_unit
     logical, optional, intent(in) :: log_stdout
     logical, optional, intent(in) :: log_stderr
 
@@ -136,7 +137,7 @@ contains
     ! If the level is not properly specified, the exception is not raised and a
     ! WARNING-level exception message noting such is raised instead.
     character(*), intent(in) :: msg
-    integer, intent(in) :: level
+    integer(ip), intent(in) :: level
 
     select case(level)
 
@@ -167,7 +168,7 @@ contains
     ! Process exception breaking
     !
     ! level :: exception level integer
-    integer, intent(in) :: level
+    integer(ip), intent(in) :: level
 
     if (level .le. break_level) then
        stop
@@ -181,7 +182,7 @@ contains
     ! msg :: exception message to log
     ! level :: exception level integer
     character(*), intent(in) :: msg
-    integer, intent(in) :: level
+    integer(ip), intent(in) :: level
 
     if (level .le. log_level) then
 
@@ -271,7 +272,7 @@ contains
     ! Set exception breaking threshold
     !
     ! level :: exception level integer
-    integer, intent(in) :: level
+    integer(ip), intent(in) :: level
 
     break_level = level
 
@@ -281,7 +282,7 @@ contains
     ! Set exception logging level
     !
     ! level :: exception level integer
-    integer, intent(in) :: level
+    integer(ip), intent(in) :: level
 
     log_level = level
   end subroutine exception_set_log_level

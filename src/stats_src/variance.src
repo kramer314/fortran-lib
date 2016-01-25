@@ -1,0 +1,14 @@
+integer(ip) :: n
+
+if (present(mask)) then
+  n = count(mask)
+  mean = stats_mean(data_arr, mask=mask)
+  ! Biased sample variance
+  val = sum(data_arr**2, mask=mask) / n - mean**2
+  ! Convert to unbiased sample variance
+  val = n / (n - 1) * val
+else
+  n = size(data_arr)
+  mean = stats_mean(data_arr)
+  val = sum((data_arr - mean)**2) / (n - 1)
+end if

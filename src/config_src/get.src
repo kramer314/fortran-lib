@@ -1,0 +1,6 @@
+character(line_length) :: param_str
+
+call config_get_param_str(param_name, param_str, found)
+if (found) then
+  call string_to_val(param_str, val)
+end if

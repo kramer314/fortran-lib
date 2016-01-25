@@ -1,0 +1,5 @@
+min = stats_min(data_arr, mask=mask)
+lq = stats_lower_quartile(data_arr, mask=mask, sorted=sorted)
+med= stats_median(data_arr, mask=mask, sorted=sorted)
+uq = stats_upper_quartile(data_arr, mask=mask, sorted=sorted)
+max = stats_max(data_arr, mask=mask)

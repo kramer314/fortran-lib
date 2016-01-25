@@ -1,0 +1,1 @@
+val = minval(data_arr, mask=mask)

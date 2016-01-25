@@ -1,0 +1,10 @@
+integer(ip) :: arr_size
+if (present(mask)) then
+  arr_size = count(mask)
+  allocate(out_arr(arr_size))
+  out_arr = pack(in_arr, mask)
+else
+  arr_size = size(in_arr)
+  allocate(out_arr(arr_size))
+  out_arr(:) = in_arr(:)
+end if

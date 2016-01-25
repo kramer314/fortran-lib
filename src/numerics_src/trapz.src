@@ -1,0 +1,5 @@
+do i_x = 1, size(f_arr) - 1
+  val = val + (f_arr(i_x) + f_arr(i_x + 1))
+end do
+
+val = val * trapz_cnst

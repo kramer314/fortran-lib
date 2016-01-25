@@ -1,0 +1,4 @@
+! lower quartile is median of values to the left of the median
+val = stats_median(data_work_arr(:data_size / 2), sorted=.true.)
+
+deallocate(data_work_arr)

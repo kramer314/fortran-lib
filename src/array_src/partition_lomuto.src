@@ -1,0 +1,16 @@
+integer(ip) :: i, j
+
+pivot = arr(i_max)
+
+i = i_min
+
+do j = i_min, i_max - 1
+  if (arr(j) .le. pivot) then
+    call array_swap(arr, i, j)
+    i = i + 1
+  end if
+end do
+
+call array_swap(arr, i, i_max)
+
+part = i

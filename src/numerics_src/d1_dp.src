@@ -1,0 +1,21 @@
+integer(ip) :: i_x, n_x
+real(dp) :: scale
+
+n_x = size(arr)
+scale = 1.0_dp / (2.0_dp * dx)
+
+! Special edge cases - we assume the grid is fine enough and the function
+! is smooth enough that this is accurate enough. For the left case:
+!
+!   f(x + h) = arr(2), f(x - h) = arr(1)
+!
+! For the right case:
+!
+!   f(x + h) = arr(n), f(x - h) = arr(n - 1)
+d_arr(1) = arr(2) - arr(1)
+do i_x = 2, n_x - 1
+  d_arr(i_x) = arr(i_x + 1) - arr(i_x - 1)
+end do
+d_arr(n_x) = arr(n_x) - arr(n_x - 1)
+
+d_arr(:) = scale * d_arr(:)

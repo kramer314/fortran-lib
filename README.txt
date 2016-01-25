@@ -4,7 +4,8 @@ See the LICENSE.txt file at the top-level directory of this distribution.
 Description
 ===========
 This is a collection of Fortran modules and routines I have written for use in
-other (primarily numerical / scientific) codes.
+other (primarily numerical / scientific) codes. I've compiled them here to have
+a sort of "standard library" to link other codes against.
 
 Dependencies
 ============
