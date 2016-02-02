@@ -14,7 +14,7 @@
 !
 ! Example module usage:
 !   call config_init("params.conf")
-!   call config.get_param("param1", value, success)
+!   call config_get_param("param1", value, success)
 !   call config_cleanup()
 module config
 
@@ -167,7 +167,7 @@ contains
   end subroutine config_get_real_dp
 
   subroutine config_get_real_sp(param_name, val, found)
-    ! Get double precision real parameter
+    ! Get single precision real parameter
     !
     ! param_name :: name of parameter to find
     ! val :: double precision real variable to be set with parameter value

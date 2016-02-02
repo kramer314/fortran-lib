@@ -10,7 +10,7 @@ module globvars
   ! Single precision real type / formatting
   integer(int32), parameter :: sp = real32
   real(sp), parameter :: sp_epsilon = epsilon(0.0_sp)
-  character(*), parameter :: sp_format_raw = "es15.8e3"
+  character(*), parameter :: sp_format_raw = "es16.8e3"
   character(*), parameter :: sp_format = "("//sp_format_raw//")"
 
   ! Double precision real type / formatting

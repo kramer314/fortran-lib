@@ -168,15 +168,16 @@ contains
 
   end subroutine log_message
 
-  pure function log_timestamp() result(stamp)
+  function log_timestamp() result(stamp)
     ! Private function to generate a formatted timestamp for logging
     character(:), allocatable :: stamp
-    character(:), allocatable :: date
-    character(:), allocatable :: time
 
-    date = ""
-    time = ""
-    !call date_and_time(date=date, time=time)
+    character(8) :: date
+    character(10) :: time
+    character(5) :: zone
+    integer(ip) :: values(8)
+
+    call date_and_time(date, time, zone, values)
     stamp = date // " " // time
 
   end function log_timestamp

@@ -37,11 +37,10 @@ contains
     ! num :: double precision real value to convert
     ! fmt :: optional custom format string
     character(:), allocatable :: val
-
     real(dp), intent(in) :: num
     character(*), optional, intent(in) :: fmt
 
-    character(:), allocatable :: tmp
+    character(120) :: tmp
 
     if (present(fmt)) then
        write(tmp, fmt) num
@@ -59,11 +58,10 @@ contains
     ! num :: double precision real value to convert
     ! fmt :: optional custom format string
     character(:), allocatable :: val
-
     real(sp), intent(in) :: num
     character(*), optional, intent(in) :: fmt
 
-    character(:), allocatable :: tmp
+    character(120) :: tmp
 
     if (present(fmt)) then
        write(tmp, fmt) num
@@ -85,7 +83,7 @@ contains
     integer(ip), intent(in) :: num
     character(*), optional, intent(in) :: fmt
 
-    character(:), allocatable :: tmp
+    character(120) :: tmp
 
     if (present(fmt)) then
        write(tmp, fmt) num
