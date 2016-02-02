@@ -1,0 +1,5 @@
+# Copyright (c) 2015 Alex Kramer <kramer.alex.kramer@gmail.com>
+# See the LICENSE.txt file at the top-level directory of this distribution.
+
+Import("env")
+env.Library("flib", source=Glob("*.f90"))
