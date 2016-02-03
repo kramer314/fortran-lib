@@ -1,0 +1,2 @@
+exp1 = - (x - mu)**2 / var
+val = sqrt(exp(exp1) / norm2)

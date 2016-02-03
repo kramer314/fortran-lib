@@ -14,6 +14,7 @@ module numerics
   public :: numerics_d2
   public :: numerics_rk4
   public :: numerics_cmplx_phase
+  public :: numerics_factorial
   public :: numerics_trapz
 
   interface numerics_linspace
@@ -69,7 +70,7 @@ module numerics
      module procedure numerics_cmplx_phase_dp
      module procedure numerics_cmplx_phase_sp
   end interface numerics_cmplx_phase
-  
+
   interface numerics_trapz
      ! Trapezoidal integration scheme:
      !
@@ -307,7 +308,7 @@ contains
     complex(sp), intent(in) :: z
 
     include "./numerics_src/cmplx_phase.src"
-    
+
   end function numerics_cmplx_phase_sp
 
   pure real(dp) function numerics_trapz_dp(f_arr, dx) result(val)
@@ -341,5 +342,13 @@ contains
     include "./numerics_src/trapz.src"
   end function numerics_trapz_sp
 
-end module numerics
+  pure integer(ip) function numerics_factorial(n) result(val)
+    ! Factorial function
+    !
+    ! We use Fortran 2003's built in gamma-function implementation for this
+    integer(ip), intent(in) :: n
 
+    val = int(gamma( 1.0_dp * (n + 1) ), kind=ip)
+  end function numerics_factorial
+
+end module numerics
