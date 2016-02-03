@@ -62,6 +62,14 @@ module numerics
      module procedure numerics_rk4_cmplx_sp
   end interface numerics_rk4
 
+  interface numerics_cmplx_phase
+     ! Calculate the phase of a complex number z = A exp(i phi)
+     !
+     ! See documentation for specific module procedures for more details.
+     module procedure numerics_cmplx_phase_dp
+     module procedure numerics_cmplx_phase_sp
+  end interface numerics_cmplx_phase
+  
   interface numerics_trapz
      ! Trapezoidal integration scheme:
      !
@@ -283,16 +291,24 @@ contains
     include "./numerics_src/rk4_sp.src"
   end subroutine numerics_rk4_cmplx_sp
 
-  pure real(dp) function numerics_cmplx_phase(z) result(val)
+  pure real(dp) function numerics_cmplx_phase_dp(z) result(val)
     ! Get the phase of a complex number z = A exp(i phi), where A determines the
     ! magnitude, and phi determines the phase angle.
     !
     ! z :: complex number
     complex(dp), intent(in) :: z
 
-    val = atan2(aimag(z),real(z))
+    include "./numerics_src/cmplx_phase.src"
 
-  end function numerics_cmplx_phase
+  end function numerics_cmplx_phase_dp
+
+  pure real(sp) function numerics_cmplx_phase_sp(z) result(val)
+    ! Duplicate of numerics_cmplx_phase_sp, but for single precision numbers
+    complex(sp), intent(in) :: z
+
+    include "./numerics_src/cmplx_phase.src"
+    
+  end function numerics_cmplx_phase_sp
 
   pure real(dp) function numerics_trapz_dp(f_arr, dx) result(val)
     ! Trapezoidal integration scheme
