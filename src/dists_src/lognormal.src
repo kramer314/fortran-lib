@@ -1,0 +1,1 @@
+val = dists_gaussian(log(x), mu_var, var_var) / x

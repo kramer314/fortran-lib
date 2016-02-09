@@ -1,0 +1,1 @@
+val = exp(-lambda) * lambda**k / numerics_factorial(k)

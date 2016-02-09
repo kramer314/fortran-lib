@@ -1,0 +1,1 @@
+val = (k / lambda) * (x / lambda)**(k - 1) * exp(-k * (x / lambda))

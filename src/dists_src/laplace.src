@@ -1,0 +1,1 @@
+val = exp(- abs(x - mu) / b) / (2 * b)

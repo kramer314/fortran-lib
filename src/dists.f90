@@ -8,6 +8,36 @@ module dists
 
   public :: dists_binomial_coeff
 
+  public :: dists_poisson
+  interface dists_poisson
+     module procedure dists_poisson_dp
+     module procedure dists_poisson_sp
+  end interface dists_poisson
+
+  public :: dists_laplace
+  interface dists_laplace
+     module procedure dists_laplace_dp
+     module procedure dists_laplace_sp
+  end interface dists_laplace
+
+  public :: dists_lognormal
+  interface dists_lognormal
+     module procedure dists_lognormal_dp
+     module procedure dists_lognormal_sp
+  end interface dists_lognormal
+
+  public :: dists_weibull
+  interface dists_weibull
+     module procedure dists_weibull_dp
+     module procedure dists_weibull_sp
+  end interface dists_weibull
+
+  public :: dists_exp
+  interface dists_exp
+     module procedure dists_exp_dp
+     module procedure dists_exp_sp
+  end interface dists_exp
+
   public :: dists_chi2
   interface dists_chi2
      module procedure dists_chi2_dp
@@ -74,6 +104,111 @@ contains
     val = numerics_factorial(n) / &
          ( numerics_factorial(k) * numerics_factorial(n - k) )
   end function dists_binomial_coeff
+
+  pure real(dp) function dists_poisson_dp(k, lambda) result(val)
+    ! Poisson distribution for double precision real values
+    !
+    ! k :: observed events in interval
+    ! lambda :: Average # of events per interval
+    integer(ip), intent(in) :: k
+    real(dp), intent(in) :: lambda
+
+    include "./dists_src/poisson.src"
+  end function dists_poisson_dp
+
+  pure real(sp) function dists_poisson_sp(k, lambda) result(val)
+    ! Duplicate of dists_poisson_dp, but for single precision reals
+    integer(ip), intent(in) :: k
+    real(sp), intent(in) :: lambda
+
+    include "./dists_src/poisson.src"
+  end function dists_poisson_sp
+
+  pure real(dp) function dists_laplace_dp(x, mu, b) result(val)
+    ! Laplace (double exponential) distribution for double precision real
+    ! values
+    !
+    ! x :: evaluation point
+    ! mu :: location parameter
+    ! b :: scale parameter > 0
+    real(dp), intent(in) :: x
+    real(dp), intent(in) :: mu
+    real(dp), intent(in) :: b
+
+    include "./dists_src/laplace.src"
+  end function dists_laplace_dp
+
+  pure real(sp) function dists_laplace_sp(x, mu, b) result(val)
+    ! Duplicate of dists_laplace_dp, but for single precision reals
+    real(sp), intent(in) :: x
+    real(sp), intent(in) :: mu
+    real(sp), intent(in) :: b
+
+    include "./dists_src/laplace.src"
+  end function dists_laplace_sp
+
+  pure real(dp) function dists_lognormal_dp(x, mu_var, var_var) result(val)
+    ! Lognormal distribution for double precision real values
+    !
+    ! x :: evaluation point
+    ! mu_var :: mean of variance
+    ! var_var :: variance of variance
+    real(dp), intent(in) :: x
+    real(dp), intent(in) :: mu_var
+    real(dp), intent(in) :: var_var
+
+    include "./dists_src/lognormal.src"
+  end function dists_lognormal_dp
+
+  pure real(sp) function dists_lognormal_sp(x, mu_var, var_var) result(val)
+    ! Duplicate of dists_lognormal_sp, but for single precision real values
+    real(sp), intent(in) :: x
+    real(sp), intent(in) :: mu_var
+    real(sp), intent(in) :: var_var
+
+    include "./dists_src/lognormal.src"
+  end function dists_lognormal_sp
+
+  pure real(dp) function dists_weibull_dp(x, lambda, k) result(val)
+    ! Weibull distribution for double precision real values
+    !
+    ! x :: evaluation point, x > 0
+    ! lambda :: shape parameter, k > 0
+    ! lambda :: scale parameter, lambda > 0
+    real(dp), intent(in) :: x
+    real(dp), intent(in) :: lambda
+    real(dp), intent(in) :: k
+
+    include "./dists_src/weibull.src"
+  end function dists_weibull_dp
+
+  pure real(dp) function dists_weibull_sp(x, lambda, k) result(val)
+    ! Duplicate of dists_weibull_sp, but for single precision real values
+    real(sp), intent(in) :: x
+    real(sp), intent(in) :: lambda
+    real(sp), intent(in) :: k
+
+    include "./dists_src/weibull.src"
+  end function dists_weibull_sp
+
+  pure real(dp) function dists_exp_dp(x, lambda) result(val)
+    ! Exponential distribution for double precision real values
+    !
+    ! x :: evaluation point, x >= 0
+    ! lambda :: rate parameter, lambda > 0
+    real(dp), intent(in) :: x
+    real(dp), intent(in) :: lambda
+
+    include "./dists_src/exp.src"
+  end function dists_exp_dp
+
+  pure real(dp) function dists_exp_sp(x, lambda) result(val)
+    ! Duplicate of dists_exp_dp, but for single precision values
+    real(sp), intent(in) :: x
+    real(sp), intent(in) :: lambda
+
+    include "./dists_src/exp.src"
+  end function dists_exp_sp
 
   pure real(dp) function dists_chi2_dp(x, k) result(val)
     ! Chi-squared distribution for double precision real values
