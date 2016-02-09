@@ -1,1 +1,1 @@
-val = dists_binomial_coeff(n, k) * p**k * p_f**(n - k)
+val = numerics_binomial_coeff(n, k) * p**k * p_f**(n - k)

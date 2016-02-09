@@ -1,0 +1,3 @@
+val = real(numerics_binomial_coeff(KK, k) * &
+    numerics_binomial_coeff(NN - KK, n - k), kind=kind(fp_cnst)) / &
+    numerics_binomial_coeff(NN, n)

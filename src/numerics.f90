@@ -10,6 +10,7 @@ module numerics
   private
 
   public :: numerics_factorial
+  public :: numerics_binomial_coeff
 
   public :: numerics_linspace
   interface numerics_linspace
@@ -375,5 +376,14 @@ contains
 
     include "./numerics_src/beta.src"
   end function numerics_beta_sp
+
+  pure integer(ip) function numerics_binomial_coeff(n, k) result(val)
+    ! Binomial coefficient (n, k) = n! / ( k! (n - k)! )
+    integer(ip), intent(in) :: n
+    integer(ip), intent(in) :: k
+
+    val = numerics_factorial(n) / &
+         ( numerics_factorial(k) * numerics_factorial(n - k) )
+  end function numerics_binomial_coeff
 
 end module numerics

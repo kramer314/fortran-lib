@@ -1,12 +1,17 @@
 module dists
   use globvars, only: dp, sp, ip, pi_dp, pi_sp
-  use numerics, only: numerics_factorial, numerics_beta
+  use numerics, only: numerics_factorial, numerics_beta, &
+       numerics_binomial_coeff
 
   implicit none
 
   private
 
-  public :: dists_binomial_coeff
+  public :: dists_hypergeometric
+  interface dists_hypergeometric
+     module procedure dists_hypergeometric_dp
+     module procedure dists_hypergeometric_sp
+  end interface dists_hypergeometric
 
   public :: dists_poisson
   interface dists_poisson
@@ -96,14 +101,36 @@ module dists
 
 contains
 
-  pure integer(ip) function dists_binomial_coeff(n, k) result(val)
-    ! Binomial coefficient (n, k) = n! / ( k! (n - k)! )
+  pure real(dp) function dists_hypergeometric_dp(n, k, NN, KK, fp_cnst) &
+       result(val)
+    ! Hypergeometric distribution that returns double precision real values
+    !
+    ! n :: # of draws
+    ! k :: # of successes
+    ! NN :: population size
+    ! KK :: # of success states
+    ! kind :: output precision
+    ! fp_cnst :: double precision number to return correct type from interface
     integer(ip), intent(in) :: n
     integer(ip), intent(in) :: k
+    integer(ip), intent(in) :: NN
+    integer(ip), intent(in) :: KK
+    real(dp), intent(in) :: fp_cnst
 
-    val = numerics_factorial(n) / &
-         ( numerics_factorial(k) * numerics_factorial(n - k) )
-  end function dists_binomial_coeff
+    include "./dists_src/hypergeometric.src"
+  end function dists_hypergeometric_dp
+
+  pure real(sp) function dists_hypergeometric_sp(n, k, NN, KK, fp_cnst) &
+       result(val)
+    ! Duplicate of dists_hypergeometric_dp, but for single precision reals
+    integer(ip), intent(in) :: n
+    integer(ip), intent(in) :: k
+    integer(ip), intent(in) :: NN
+    integer(ip), intent(in) :: KK
+    real(sp), intent(in) :: fp_cnst
+
+    include "./dists_src/hypergeometric.src"
+  end function dists_hypergeometric_sp
 
   pure real(dp) function dists_poisson_dp(k, lambda) result(val)
     ! Poisson distribution for double precision real values
