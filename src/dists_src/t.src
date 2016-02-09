@@ -1,0 +1,3 @@
+term1 = gamma((nu + 1) / 2) / (sqrt(nu * pi_fp) * gamma(nu / 2))
+term2 = (1 + t**2 / nu)**(-(nu + 1)/2)
+val = term1 * term2

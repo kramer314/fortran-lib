@@ -1,0 +1,1 @@
+val = 1 / pi_fp * gamma**2 / ((x - x0)**2 + gamma**2)

@@ -1,0 +1,1 @@
+val = gamma(x) * gamma(y) / gamma(x + y)

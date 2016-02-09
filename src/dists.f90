@@ -1,12 +1,45 @@
 module dists
   use globvars, only: dp, sp, ip, pi_dp, pi_sp
-  use numerics, only: numerics_factorial
+  use numerics, only: numerics_factorial, numerics_beta
 
   implicit none
 
   private
 
   public :: dists_binomial_coeff
+
+  public :: dists_chi2
+  interface dists_chi2
+     module procedure dists_chi2_dp
+     module procedure dists_chi2_sp
+  end interface dists_chi2
+
+  public :: dists_f
+  interface dists_f
+     module procedure dists_f_dp
+     module procedure dists_f_sp
+  end interface dists_f
+
+  public :: dists_cauchy
+  interface dists_cauchy
+     ! Cauchy distribution
+     module procedure dists_cauchy_dp
+     module procedure dists_cauchy_sp
+  end interface dists_cauchy
+
+  public :: dists_gamma
+  interface dists_gamma
+     ! Gamma distribution
+     module procedure dists_gamma_dp
+     module procedure dists_gamma_sp
+  end interface dists_gamma
+
+  public :: dists_t
+  interface dists_t
+     ! Student's t distribution
+     module procedure dists_t_dp
+     module procedure dists_t_sp
+  end interface dists_t
 
   public :: dists_binomial
   interface dists_binomial
@@ -42,6 +75,94 @@ contains
          ( numerics_factorial(k) * numerics_factorial(n - k) )
   end function dists_binomial_coeff
 
+  pure real(dp) function dists_chi2_dp(x, k) result(val)
+    ! Chi-squared distribution for double precision real values
+    !
+    ! x :: evaluation point
+    ! k :: degrees of freedom
+    real(dp), intent(in) :: x
+    integer(ip), intent(in) :: k
+
+    real(dp) :: k_2_fp
+    real(dp) :: numer
+    real(dp) :: denom
+
+    k_2_fp = k / 2.0_dp
+
+    include "./dists_src/chi2.src"
+  end function dists_chi2_dp
+
+  pure real(dp) function dists_chi2_sp(x, k) result(val)
+    ! Duplicate of dists_chi2_dp, but for single precision real values
+    real(sp), intent(in) :: x
+    integer(ip), intent(in) :: k
+
+    real(sp) :: k_2_fp
+    real(sp) :: numer
+    real(sp) :: denom
+
+    k_2_fp = k / 2.0_sp
+
+    include "./dists_src/chi2.src"
+  end function dists_chi2_sp
+
+  pure real(dp) function dists_f_dp(x, d1, d2) result(val)
+    ! F distribution for double precision real values
+    !
+    ! x :: evaluation point
+    ! d1 :: 1st shape parameter
+    ! d2 :: 2nd shaper parameter
+    real(dp), intent(in) :: x
+    real(dp), intent(in) :: d1
+    real(dp), intent(in) :: d2
+
+    real(dp) :: numer
+    real(dp) :: denom
+
+    include "./dists_src/f.src"
+  end function dists_f_dp
+
+  pure real(sp) function dists_f_sp(x, d1, d2) result(val)
+    ! Duplicate of dists_f_dp, but for single precision values
+    real(sp), intent(in) :: x
+    real(sp), intent(in) :: d1
+    real(sp), intent(in) :: d2
+
+    real(sp) :: numer
+    real(sp) :: denom
+
+    include "./dists_src/f.src"
+  end function dists_f_sp
+
+  pure real(dp) function dists_cauchy_dp(x, x0, gamma) result(val)
+    ! Cauchy distribution for double precision values
+    !
+    ! x :: evaluation point
+    ! x0 :: location parameter
+    ! gamma :: scale parameter
+    real(dp), intent(in) :: x
+    real(dp), intent(in) :: x0
+    real(dp), intent(in) :: gamma
+
+    real(dp), parameter :: pi_fp = pi_dp
+
+    include "./dists_src/cauchy.src"
+
+  end function dists_cauchy_dp
+
+  pure real(sp) function dists_cauchy_sp(x, x0, gamma) result(val)
+    ! Duplicate of dists_cauchy_dp, but for single precision values
+    ! gamma :: scale parameter
+    real(sp), intent(in) :: x
+    real(sp), intent(in) :: x0
+    real(sp), intent(in) :: gamma
+
+    real(sp), parameter :: pi_fp = pi_sp
+
+    include "./dists_src/cauchy.src"
+
+  end function dists_cauchy_sp
+
   pure real(dp) function dists_binomial_dp(k, n, p) result(val)
     ! Binomial distribution for double precision values
     !
@@ -71,6 +192,67 @@ contains
 
     include "./dists_src/binomial.src"
   end function dists_binomial_sp
+
+  pure real(dp) function dists_gamma_dp(x, k, theta) result(val)
+    ! Gamma distribution for double precision real values
+    !
+    ! x :: evaluation point
+    ! k :: shape parameter, k > 0
+    ! theta :: scale parameter, theta > 0
+    real(dp), intent(in) :: x
+    real(dp), intent(in) :: k
+    real(dp), intent(in) :: theta
+
+    real(dp) :: numer
+    real(dp) :: denom
+
+    include "./dists_src/gamma.src"
+  end function dists_gamma_dp
+
+  pure  real(sp) function dists_gamma_sp(x, k, theta) result(val)
+    ! Duplicate of dists_gamma, but for single precision values
+    real(sp), intent(in) :: x
+    real(sp), intent(in) :: k
+    real(sp), intent(in) :: theta
+
+    real(sp) :: numer
+    real(sp) :: denom
+
+    include "./dists_src/gamma.src"
+  end function dists_gamma_sp
+
+  pure real(dp) function dists_t_dp(t, n) result(val)
+    ! Student's t distribution for double precision real values
+    !
+    ! t :: t value
+    ! n :: degrees of freedom
+    real(dp), intent(in) :: t
+    integer(ip), intent(in) :: n
+
+    real(dp) :: term1
+    real(dp) :: term2
+    real(dp) :: nu
+    real(dp), parameter :: pi_fp = pi_dp
+
+    nu = real(n - 1, kind=dp)
+
+    include "./dists_src/t.src"
+  end function dists_t_dp
+
+  pure real(sp) function dists_t_sp(t, n) result(val)
+    ! Duplicate of dists_t_sp, but for single precision values
+    real(sp), intent(in) :: t
+    integer(ip), intent(in) :: n
+
+    real(sp) :: term1
+    real(sp) :: term2
+    real(sp) :: nu
+    real(sp), parameter :: pi_fp = pi_sp
+
+    nu = real(n - 1, kind=sp)
+
+    include "./dists_src/t.src"
+  end function dists_t_sp
 
   pure real(dp) function dists_gaussian_dp(x, mu, var) result(val)
     ! Normalized Gaussian distribution for double precision values

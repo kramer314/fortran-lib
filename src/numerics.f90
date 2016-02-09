@@ -9,19 +9,21 @@ module numerics
 
   private
 
-  public :: numerics_linspace
-  public :: numerics_d1
-  public :: numerics_d2
-  public :: numerics_rk4
-  public :: numerics_cmplx_phase
   public :: numerics_factorial
-  public :: numerics_trapz
 
+  public :: numerics_linspace
   interface numerics_linspace
      module procedure numerics_linspace_dp
      module procedure numerics_linspace_sp
   end interface numerics_linspace
 
+  public :: numerics_beta
+  interface numerics_beta
+     module procedure numerics_beta_dp
+     module procedure numerics_beta_sp
+  end interface
+
+  public :: numerics_d1
   interface numerics_d1
      ! Calculate the 1st derivative of an array-valued function with respect to
      ! a real-valued coordinate grid with constant spacing.
@@ -37,6 +39,7 @@ module numerics
      module procedure numerics_d1_cmplx_sp
   end interface numerics_d1
 
+  public :: numerics_d2
   interface numerics_d2
      ! Calculate the 2nd derivative of an array-valued function with respect to
      ! a real-valued coordinate grid with constant spacing.
@@ -52,6 +55,7 @@ module numerics
      module procedure numerics_d2_cmplx_sp
   end interface numerics_d2
 
+  public :: numerics_rk4
   interface numerics_rk4
      ! 4th-order Runge-Kutta propagator for the first order system of
      ! differential equations dy/dt = f(y, t)
@@ -63,6 +67,7 @@ module numerics
      module procedure numerics_rk4_cmplx_sp
   end interface numerics_rk4
 
+  public :: numerics_cmplx_phase
   interface numerics_cmplx_phase
      ! Calculate the phase of a complex number z = A exp(i phi)
      !
@@ -71,6 +76,7 @@ module numerics
      module procedure numerics_cmplx_phase_sp
   end interface numerics_cmplx_phase
 
+  public :: numerics_trapz
   interface numerics_trapz
      ! Trapezoidal integration scheme:
      !
@@ -350,5 +356,24 @@ contains
 
     val = int(gamma( 1.0_dp * (n + 1) ), kind=ip)
   end function numerics_factorial
+
+  pure real(dp) function numerics_beta_dp(x, y) result(val)
+    ! Beta function for double precision real values
+    !
+    ! x :: x > 0
+    ! y :: y > 0
+    real(dp), intent(in) :: x
+    real(dp), intent(in) :: y
+
+    include "./numerics_src/beta.src"
+  end function numerics_beta_dp
+
+  pure real(sp) function numerics_beta_sp(x, y) result(val)
+    ! Duplicate of numerics_beta_dp, but for single precision values
+    real(sp), intent(in) :: x
+    real(sp), intent(in) :: y
+
+    include "./numerics_src/beta.src"
+  end function numerics_beta_sp
 
 end module numerics

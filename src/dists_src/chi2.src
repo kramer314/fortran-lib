@@ -1,0 +1,3 @@
+numer = x**(k_2_fp - 1) * exp(-x / 2)
+denom = 2**(k_2_fp) * gamma(k_2_fp)
+val = numer / denom

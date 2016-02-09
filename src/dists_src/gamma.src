@@ -1,0 +1,3 @@
+numer = x**(k - 1) * exp( - x / theta)
+denom = theta**k * gamma(k)
+val = numer / denom
