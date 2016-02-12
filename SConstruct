@@ -8,8 +8,10 @@ build_dir = "#build/"
 
 env = DefaultEnvironment(ENV = os.environ, TOOLS = ['default', "gfortran"])
 
-# See https://gcc.gnu.org/onlinedocs/gfortran/IEEE-modules.html
-debug_flags = "-Og -g3 -Wall -Wextra -Wconversion -Wunused-parameter -pedantic -fcheck=all -fbacktrace -fno-unsafe-math-optimizations -frounding-math -fsignaling-nans"
+IEEE_flags = "-fno-unsafe-math-optimizations -frounding-math -fsignaling-nans"
+debug_flags = "-Og -g3 -Wall -Wextra -Wconversion -Wunused-parameter " + \
+    "-pedantic -fcheck=all -fbacktrace " + IEEE_flags
+prod_flags = "-O3 -march=native " + IEEE_flags
 
 env.Replace(F90FLAGS = debug_flags)
 env.Replace(FORTRANMODDIRPREFIX = "-J ")
