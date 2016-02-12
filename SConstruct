@@ -8,7 +8,10 @@ build_dir = "#build/"
 
 env = DefaultEnvironment(ENV = os.environ, TOOLS = ['default', "gfortran"])
 
-env.Replace(F90FLAGS = "-O3 -ffast-math -g -Wall")
+# See https://gcc.gnu.org/onlinedocs/gfortran/IEEE-modules.html
+debug_flags = "-Og -g3 -Wall -Wextra -Wconversion -Wunused-parameter -pedantic -fcheck=all -fbacktrace -fno-unsafe-math-optimizations -frounding-math -fsignaling-nans"
+
+env.Replace(F90FLAGS = debug_flags)
 env.Replace(FORTRANMODDIRPREFIX = "-J ")
 env.Replace(FORTRANMODDIR = build_dir)
 

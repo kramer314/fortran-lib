@@ -16,7 +16,7 @@ module globvars
   ! Double precision real type / formatting
   integer(int32), parameter :: dp = real64
   real(dp), parameter :: dp_epsilon = epsilon(0.0_dp)
-  character(*), parameter :: dp_format_raw = "es23.16e3"
+  character(*), parameter :: dp_format_raw = "es24.16e3"
   character(*), parameter :: dp_format = "("//dp_format_raw//")"
 
   ! Integer single precision type / formatting

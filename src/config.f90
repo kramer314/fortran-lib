@@ -121,7 +121,7 @@ contains
       !
       ! str :: parameter string
       character(*), intent(in) :: str
-      character(:), allocatable :: tmp
+      character(line_length) :: tmp
 
       tmp = trim(adjustl(str))
 
