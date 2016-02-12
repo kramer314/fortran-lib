@@ -1,6 +1,0 @@
-k1 = f(y, t)
-k2 = f(y + dt / 2.0_sp * k1, t + dt / 2.0_sp)
-k3 = f(y + dt / 2.0_sp * k2, t + dt / 2.0_sp)
-k4 = f(y + dt * k3, t + dt)
-
-y = y + dt / 6.0_sp * (k1 + 2.0_sp * k2 + 2.0_sp * k3 + k4)

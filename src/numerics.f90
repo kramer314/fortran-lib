@@ -125,7 +125,9 @@ contains
     real(dp), intent(out) :: d_arr(:)
     real(dp), intent(in) :: dx
 
-    include "./numerics_src/d1_dp.src"
+    integer(ip), parameter :: fp = dp
+
+    include "./numerics_src/d1.src"
   end subroutine numerics_d1_real_dp
 
   subroutine numerics_d1_real_sp(arr, d_arr, dx)
@@ -133,7 +135,9 @@ contains
     real(sp), intent(out) :: d_arr(:)
     real(sp), intent(in) :: dx
 
-    include "./numerics_src/d1_sp.src"
+    integer(ip), parameter :: fp = sp
+
+    include "./numerics_src/d1.src"
   end subroutine numerics_d1_real_sp
 
   subroutine numerics_d1_cmplx_dp(arr, d_arr, dx)
@@ -148,7 +152,9 @@ contains
     complex(dp), intent(out) :: d_arr(:)
     real(dp), intent(in) :: dx
 
-    include "./numerics_src/d1_dp.src"
+    integer(ip), parameter :: fp = dp
+
+    include "./numerics_src/d1.src"
   end subroutine numerics_d1_cmplx_dp
 
   subroutine numerics_d1_cmplx_sp(arr, d_arr, dx)
@@ -157,7 +163,9 @@ contains
     complex(sp), intent(out) :: d_arr(:)
     real(sp), intent(in) :: dx
 
-    include "./numerics_src/d1_sp.src"
+    integer(ip), parameter :: fp = sp
+
+    include "./numerics_src/d1.src"
   end subroutine numerics_d1_cmplx_sp
 
   subroutine numerics_d2_real_dp(arr, d2_arr, dx)
@@ -171,7 +179,9 @@ contains
     real(dp), intent(inout) :: d2_arr(:)
     real(dp), intent(in) :: dx
 
-    include "./numerics_src/d2_dp.src"
+    integer(ip), parameter :: fp = dp
+
+    include "./numerics_src/d2.src"
   end subroutine numerics_d2_real_dp
 
   subroutine numerics_d2_real_sp(arr, d2_arr, dx)
@@ -180,7 +190,9 @@ contains
     real(sp), intent(inout) :: d2_arr(:)
     real(sp), intent(in) :: dx
 
-    include "./numerics_src/d2_sp.src"
+    integer(ip), parameter :: fp = sp
+
+    include "./numerics_src/d2.src"
   end subroutine numerics_d2_real_sp
 
   subroutine numerics_d2_cmplx_dp(arr, d2_arr, dx)
@@ -189,7 +201,9 @@ contains
     complex(dp), intent(inout) :: d2_arr(:)
     real(dp), intent(in) :: dx
 
-    include "./numerics_src/d2_dp.src"
+    integer(ip), parameter :: fp = dp
+
+    include "./numerics_src/d2.src"
   end subroutine numerics_d2_cmplx_dp
 
   subroutine numerics_d2_cmplx_sp(arr, d2_arr, dx)
@@ -198,7 +212,9 @@ contains
     complex(sp), intent(inout) :: d2_arr(:)
     real(sp), intent(in) :: dx
 
-    include "./numerics_src/d2_sp.src"
+    integer(ip), parameter :: fp = sp
+
+    include "./numerics_src/d2.src"
   end subroutine numerics_d2_cmplx_sp
 
   subroutine numerics_rk4_real_dp(f, y, t, dt)
@@ -230,7 +246,7 @@ contains
 
     end interface
 
-    include "./numerics_src/rk4_dp.src"
+    include "./numerics_src/rk4.src"
   end subroutine numerics_rk4_real_dp
 
   subroutine numerics_rk4_real_sp(f, y, t, dt)
@@ -252,7 +268,7 @@ contains
 
     end interface
 
-    include "./numerics_src/rk4_sp.src"
+    include "./numerics_src/rk4.src"
   end subroutine numerics_rk4_real_sp
 
   subroutine numerics_rk4_cmplx_dp(f, y, t, dt)
@@ -274,7 +290,7 @@ contains
 
     end interface
 
-    include "./numerics_src/rk4_dp.src"
+    include "./numerics_src/rk4.src"
   end subroutine numerics_rk4_cmplx_dp
 
   subroutine numerics_rk4_cmplx_sp(f, y, t, dt)
@@ -296,7 +312,7 @@ contains
 
     end interface
 
-    include "./numerics_src/rk4_sp.src"
+    include "./numerics_src/rk4.src"
   end subroutine numerics_rk4_cmplx_sp
 
   pure real(dp) function numerics_cmplx_phase_dp(z) result(val)

@@ -1,0 +1,18 @@
+real(fp) :: scale
+integer(ip) :: i_x, n_x
+
+n_x = size(arr)
+scale = 1.0_fp / dx**2
+
+! Edge cases - we use 1st order accuracy forward derivatives for the left edge
+! and 1st order accuracy backward derivatives for the right edge. These are the
+! formulas as the 2nd order accuracy central derivative used for the rest of
+! the grid.
+
+d2_arr(1) = arr(1) - 2 * arr(2) + arr(3)
+do i_x = 2, n_x - 1
+  d2_arr(i_x) = arr(i_x - 1) - 2.0_sp * arr(i_x) + arr(i_x + 1)
+end do
+d2_arr(n_x) = arr(n_x - 2) - 2 * arr(n_x - 1) + arr(n_x)
+
+d2_arr(:) = scale * d2_arr(:)
