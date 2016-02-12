@@ -18,7 +18,7 @@ contains
 
     character(*), intent(in) :: dir
 
-    call system("mkdir -p "//trim(dir))
+    call execute_command_line("mkdir -p "//trim(dir))
 
   end subroutine files_ensure_dir
 
