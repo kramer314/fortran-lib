@@ -169,7 +169,9 @@ contains
     logical, intent(in), optional :: mask(:)
     logical, intent(in), optional :: sorted
 
-    include "./stats_src/quartile_dp.src"
+    integer(ip), parameter :: fp = dp
+
+    include "./stats_src/quartile.src"
     include "./stats_src/lower_quartile.src"
   end function stats_lower_quartile_dp
 
@@ -179,7 +181,9 @@ contains
     logical, intent(in), optional :: mask(:)
     logical, intent(in), optional :: sorted
 
-    include "./stats_src/quartile_sp.src"
+    integer(ip), parameter :: fp = sp
+
+    include "./stats_src/quartile.src"
     include "./stats_src/lower_quartile.src"
   end function stats_lower_quartile_sp
 
@@ -193,7 +197,9 @@ contains
     logical, intent(in), optional :: mask(:)
     logical, intent(in), optional :: sorted
 
-    include "./stats_src/quartile_dp.src"
+    integer(ip), parameter :: fp = dp
+
+    include "./stats_src/quartile.src"
     include "./stats_src/upper_quartile.src"
   end function stats_upper_quartile_dp
 
@@ -203,7 +209,9 @@ contains
     logical, intent(in), optional :: mask(:)
     logical, intent(in), optional :: sorted
 
-    include "./stats_src/quartile_sp.src"
+    integer(ip), parameter :: fp = sp
+
+    include "./stats_src/quartile.src"
     include "./stats_src/upper_quartile.src"
   end function stats_upper_quartile_sp
 
@@ -358,5 +366,23 @@ contains
 
     include "./stats_src/stdev.src"
   end function stats_stdev_sp
+
+  pure logical function stats_to_sort(sorted) result(val)
+    ! Private helper function to determine if an array needs to be sorted baesd
+    ! on input arguments. This is here to reduce code duplication.
+    logical, optional, intent(in) :: sorted
+    logical :: to_sort
+
+    to_sort = .true.
+    ! This can't be a single if statement since Fortran doesn't have short-
+    ! circuit evaluation
+    if (present(sorted)) then
+       if (sorted) then
+          to_sort = .false.
+       end if
+    end if
+
+    val = to_sort
+  end function stats_to_sort
 
 end module stats

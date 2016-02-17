@@ -3,7 +3,7 @@ integer(ip) :: data_size
 call array_pack(data_arr, data_work_arr, mask=mask)
 data_size = size(data_work_arr)
 
-if (.not. sorted) then
+if (stats_to_sort(sorted=sorted)) then
   call array_quicksort(data_work_arr, 1, size(data_work_arr))
 end if
 
