@@ -4,7 +4,7 @@
 ! This module implements basic string conversions.
 module string
 
-  use globvars, only: dp, dp_format, sp, sp_format, ip, int_format
+  use globvars, only: dp, dp_format, sp, sp_format, ip, ip_format
 
   implicit none
 
@@ -88,7 +88,7 @@ contains
     if (present(fmt)) then
        write(tmp, fmt) num
     else
-       write(tmp, int_format) num
+       write(tmp, ip_format) num
     end if
 
     val = trim(adjustl(tmp))

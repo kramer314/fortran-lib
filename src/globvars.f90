@@ -21,8 +21,8 @@ module globvars
 
   ! Integer single precision type / formatting
   integer(int32), parameter :: ip = int32
-  character(*), parameter :: int_format = "(i0)"
-  character(*), parameter :: int_format_raw = "i0"
+  character(*), parameter :: ip_format = "(i0)"
+  character(*), parameter :: ip_format_raw = "i0"
 
   ! Useful numbers
   real(dp), parameter :: pi_dp = 4.0_dp * atan(1.0_dp)
