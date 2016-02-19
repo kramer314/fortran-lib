@@ -1,0 +1,1 @@
+resid_rel_arr(:) = abs(data_arr(:) - theor_arr(:)) / theor_arr(:)

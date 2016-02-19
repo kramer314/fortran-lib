@@ -16,6 +16,12 @@ module stats
      module procedure stats_residuals_sp
   end interface stats_residuals
 
+  public :: stats_residuals_rel
+  interface stats_residuals_rel
+     module procedure stats_residuals_rel_dp
+     module procedure stats_residuals_rel_sp
+  end interface stats_residuals_rel
+
   public :: stats_mean
   interface stats_mean
      module procedure stats_mean_dp
@@ -83,6 +89,26 @@ module stats
   end interface stats_stdev
 
 contains
+
+  subroutine stats_residuals_rel_dp(data_arr, theor_arr, resid_rel_arr)
+    ! Calculate relative residuals for double precision real values
+    !
+    ! data_arr :: array of experimental data values
+    ! theor_arr :: arry of theoretical values, parallel to data_arr
+    ! resid_rel_arr :: array to populate with relative residuals
+    real(dp), intent(in) :: data_arr(:), theor_arr(:)
+    real(dp), intent(inout) :: resid_rel_arr(:)
+
+    include "./stats_src/residuals_rel.src"
+  end subroutine stats_residuals_rel_dp
+
+  subroutine stats_residuals_rel_sp(data_arr, theor_arr, resid_rel_arr)
+    ! Duplicate of stats_residuals_rel_dp, but for single precision reals
+    real(sp), intent(in) :: data_arr(:), theor_arr(:)
+    real(sp), intent(inout) :: resid_rel_arr(:)
+
+    include "./stats_src/residuals_rel.src"
+  end subroutine stats_residuals_rel_sp
 
   subroutine stats_residuals_dp(data_arr, theor_arr, resid_arr)
     ! Calculate residuals, for double precision real arrays
