@@ -233,9 +233,9 @@ contains
     found = .false.
     do i_param = 1, num_params
 
-       ! Match parameter name and get string value
-       if (index(param_lines(i_param), trim(param_name)) .gt. 0) then
-          val_idex = index(param_lines(i_param), "=")
+       val_idex = index(param_lines(i_param), "=")
+       ! Match the parameter name to the string left of "=" in the input line
+       if (trim(param_lines(i_param)(1:val_idex - 1)) .eq. trim(param_name)) then
           str = param_lines(i_param)(val_idex + 1:)
           found = .true.
           exit
