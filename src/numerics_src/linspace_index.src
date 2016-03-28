@@ -1,0 +1,14 @@
+integer(ip) :: nx
+real(fp) :: dx
+
+nx = size(x_arr)
+dx = x_arr(2) - x_arr(1)
+
+! The +1 here is because Fortran arrays are 1-indexed by default
+val = nint( (x_val - x_arr(1)) / dx ) + 1
+
+if (val .lt. 1) then
+  val = -1_ip
+else if (val .gt. nx) then
+  val = 0_ip
+end if

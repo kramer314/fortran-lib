@@ -18,6 +18,12 @@ module numerics
      module procedure numerics_linspace_sp
   end interface numerics_linspace
 
+  public :: numerics_linspace_index
+  interface numerics_linspace_index
+     module procedure numerics_linspace_index_dp
+     module procedure numerics_linspace_index_sp
+  end interface numerics_linspace_index
+
   public :: numerics_beta
   interface numerics_beta
      module procedure numerics_beta_dp
@@ -112,6 +118,34 @@ contains
 
     include "./numerics_src/linspace.src"
   end subroutine numerics_linspace_sp
+
+  integer(ip) function numerics_linspace_index_dp(x_val, x_arr) result(val)
+    ! Get the array index of a value within an array of linearly spaced
+    ! increasing values
+    !
+    ! If the value is outside the lower bound of the array, -1 is returned
+    ! If the value is outside the upper bound of the array, 0 is returned
+    !
+    ! x_val :: value to index
+    ! x_arr :: range to fit
+    real(dp), intent(in) :: x_val
+    real(dp), intent(in) :: x_arr(:)
+
+    integer(ip), parameter :: fp = dp
+
+    include "./numerics_src/linspace_index.src"
+  end function numerics_linspace_index_dp
+
+  integer(ip) function numerics_linspace_index_sp(x_val, x_arr) result(val)
+    ! Duplicate of numericsc_linspace_index_dp, but for single precision real
+    ! values
+    real(sp), intent(in) :: x_val
+    real(sp), intent(in) :: x_arr(:)
+
+    integer(ip), parameter :: fp = sp
+
+    include "./numerics_src/linspace_index.src"
+  end function numerics_linspace_index_sp
 
   subroutine numerics_d1_real_dp(arr, d_arr, dx)
     ! Calculate the 1st derivative of a double-precision real array-valued
