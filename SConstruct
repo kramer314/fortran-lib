@@ -8,12 +8,15 @@ build_dir = "#build/"
 
 env = DefaultEnvironment(ENV = os.environ, TOOLS = ['default', "gfortran"])
 
-IEEE_flags = "-fno-unsafe-math-optimizations -frounding-math -fsignaling-nans"
+IEEE_flags = "-fno-unsafe-math-optimizations -frounding-math -fsignaling-nans "
 debug_flags = "-Og -g3 -Wall -Wextra -Wconversion -Wunused-parameter " + \
-    "-pedantic -std=f2008 -fcheck=all -fbacktrace " + IEEE_flags
-prod_flags = "-O3 -march=native " + IEEE_flags
+    "-pedantic -std=f2008 -fcheck=all -fbacktrace "
+prod_flags = "-O3 -march=native "
 
-env.Replace(F90FLAGS = debug_flags)
+flags = debug_flags + IEEE_flags
+
+env.Replace(F90FLAGS = flags)
+env.Replace(LINKFLAGS = flags)
 env.Replace(FORTRANMODDIRPREFIX = "-J ")
 env.Replace(FORTRANMODDIR = build_dir)
 
