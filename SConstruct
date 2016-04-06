@@ -11,9 +11,10 @@ env = DefaultEnvironment(ENV = os.environ, TOOLS = ['default', "gfortran"])
 IEEE_flags = "-fno-unsafe-math-optimizations -frounding-math -fsignaling-nans "
 debug_flags = "-Og -g3 -Wall -Wextra -Wconversion -Wunused-parameter " + \
     "-pedantic -std=f2008 -fcheck=all -fbacktrace "
+generic_flags = "-frecursive "
 prod_flags = "-O3 -march=native "
 
-flags = debug_flags + IEEE_flags
+flags = generic_flags + debug_flags + IEEE_flags
 
 env.Replace(F90FLAGS = flags)
 env.Replace(LINKFLAGS = flags)
