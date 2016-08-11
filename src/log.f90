@@ -165,6 +165,7 @@ contains
 
     log_msg = level_msg // " :: " // log_timestamp() // " :: " // msg
     write(unit, *) log_msg
+    flush(unit)
 
   end subroutine log_message
 

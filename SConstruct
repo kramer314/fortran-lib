@@ -2,9 +2,14 @@
 # See the LICENSE.txt file at the top-level directory of this distribution.
 
 import os
+abspath = os.path.abspath
 
-source_dir = "#src/"
-build_dir = "#build/"
+def absdir(path):
+    return os.path.abspath(path) + "/"
+
+root_dir = absdir("./")
+source_dir = root_dir + "src/"
+build_dir = root_dir + "build/"
 
 env = DefaultEnvironment(ENV = os.environ, TOOLS = ['default', "gfortran"])
 
@@ -14,12 +19,14 @@ debug_flags = "-Og -g3 -Wall -Wextra -Wconversion -Wunused-parameter " + \
 generic_flags = "-frecursive "
 prod_flags = "-O3 -march=native "
 
-flags = generic_flags + debug_flags + IEEE_flags
+flags = generic_flags + IEEE_flags + debug_flags
+flags = generic_flags + IEEE_flags + prod_flags
 
 env.Replace(F90FLAGS = flags)
 env.Replace(LINKFLAGS = flags)
 env.Replace(FORTRANMODDIRPREFIX = "-J ")
 env.Replace(FORTRANMODDIR = build_dir)
+env.Replace(F90PATH = [build_dir])
 
 Export("env")
 
