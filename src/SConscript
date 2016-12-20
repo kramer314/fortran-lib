@@ -2,4 +2,4 @@
 # See the LICENSE.txt file at the top-level directory of this distribution.
 
 Import("env")
-env.Library("flib", source=Glob("*.f90"))
+env.SharedLibrary("flib", source=Glob("*.f90"))
